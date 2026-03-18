@@ -58,6 +58,7 @@ function App() {
   };
   return (
     <MainLayout>
+      {/* sdsada */}
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
       <div>
         <h2 className="text-3xl font-bold">Welcome to Dashboard! 🚀</h2>

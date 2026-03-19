@@ -11,6 +11,8 @@ function App() {
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
+  const [newTaskCategory, setNewTaskCategory] = useState("Work");
+
   useEffect(() => {
     localStorage.setItem("dev-tasks", JSON.stringify(tasks));
   }, [tasks]);
@@ -21,19 +23,22 @@ function App() {
     const newTask = {
       id: Date.now(),
       title: newTaskTitle,
-      category: "Personal Tasks",
+      category: newTaskCategory,
       completed: false,
     };
 
     setTasks([newTask, ...tasks]);
 
     setNewTaskTitle("");
+    setNewTaskCategory("Work");
   };
 
   const deleteTask = (taskID) => {
     const remainingTasks = tasks.filter((task) => task.id !== taskID);
     setTasks(remainingTasks);
   };
+
+
 
   const toggleTaskDone = (taskID) => {
     console.log("Hi toglleTaskDone clicked.");
@@ -65,6 +70,13 @@ function App() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
             />
 
+            <select value={newTaskCategory} onChange={(e) => setNewTaskCategory(e.target.value)} className="border border-gray-300 px-4 py-2 rounded-lg">
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Coding">Coding</option>
+              <option value="Studdy">Studdy</option>
+            </select>
+
             <button
               onClick={handleAddTask}
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -72,17 +84,31 @@ function App() {
               Add
             </button>
           </div>
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              category={task.category}
-              completed={task.completed}
-              onToggle={toggleTaskDone}
-              onDelete={deleteTask}
-            />
-          ))}
+          <div className="space-y-4">
+            {tasks.length === 0 ? (
+              <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                <p className="text-4xl mb-2">☕</p>
+                <h3 className="text-lg font-semibold text-gray-600">
+                  All done!
+                </h3>
+                <p className="text-gray-600">
+                  You have completed all your tasks for today!, take some rest.
+                </p>
+              </div>
+            ) : (
+              tasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  category={task.category}
+                  completed={task.completed}
+                  onToggle={toggleTaskDone}
+                  onDelete={deleteTask}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </MainLayout>

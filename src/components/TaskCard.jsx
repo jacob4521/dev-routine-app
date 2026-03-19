@@ -1,8 +1,21 @@
 import { useState } from "react";
 
-const TaskCard = ({ id, title, category, completed, onToggle, onDelete }) => {
+const TaskCard = ({
+  id,
+  title,
+  category,
+  completed,
+  onToggle,
+  onDelete,
+  onUpdate,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
+
+  const handleSave = () => {
+    onUpdate(id, newTitle);
+    setIsEditing(false);
+  };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center border border-gray-100">
@@ -40,7 +53,7 @@ const TaskCard = ({ id, title, category, completed, onToggle, onDelete }) => {
           {completed && <span className="text-white text-xs">✔</span>}
         </button>
         <button
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
           className="text-blue-500 hover:bg-blue-50 px-2 py-1 rounded-md transition-colors text-sm font-medium"
         >
           {isEditing ? "Save" : "Edit"}

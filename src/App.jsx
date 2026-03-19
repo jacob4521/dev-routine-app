@@ -38,6 +38,16 @@ function App() {
     setTasks(remainingTasks);
   };
 
+  const updateTask = (id, newTitle) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === id) {
+        return { ...task, title: newTitle };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
   const toggleTaskDone = (taskID) => {
     console.log("Hi toglleTaskDone clicked.");
     const updatedTasks = tasks.map((task) => {
@@ -107,6 +117,7 @@ function App() {
                   completed={task.completed}
                   onToggle={toggleTaskDone}
                   onDelete={deleteTask}
+                  onUpdate={updateTask}
                 />
               ))
             )}

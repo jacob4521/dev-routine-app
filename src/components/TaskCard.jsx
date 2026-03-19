@@ -1,12 +1,28 @@
+import { useState } from "react";
+
 const TaskCard = ({ id, title, category, completed, onToggle, onDelete }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
+
   return (
     <div className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center border border-gray-100">
       <div>
-        <h2
-          className={`font-bold ${completed ? "line-through text-gray-400" : "text-gray-800"}`}
-        >
-          {title}
-        </h2>
+        {isEditing ? (
+          <input
+            type="text"
+            className="border border-blue-400 px-2 py-1 rounded w-full outline-none"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            autoFocus
+          />
+        ) : (
+          <h2
+            className={`font-bold ${completed ? "line-through text-gray-400" : "text-gray-800"}`}
+          >
+            {title}
+          </h2>
+        )}
+
         <p className="text-xs font-medium px-2 py-1 bg-blue-50 text-blue-600 rounded-md mt-1 inline-block">
           {category}
         </p>
@@ -23,7 +39,16 @@ const TaskCard = ({ id, title, category, completed, onToggle, onDelete }) => {
         >
           {completed && <span className="text-white text-xs">✔</span>}
         </button>
-        <button onClick={() => onDelete(id)} className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold">
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="text-blue-500 hover:bg-blue-50 px-2 py-1 rounded-md transition-colors text-sm font-medium"
+        >
+          {isEditing ? "Save" : "Edit"}
+        </button>
+        <button
+          onClick={() => onDelete(id)}
+          className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
+        >
           X
         </button>
       </div>

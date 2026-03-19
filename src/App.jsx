@@ -38,8 +38,6 @@ function App() {
     setTasks(remainingTasks);
   };
 
-
-
   const toggleTaskDone = (taskID) => {
     console.log("Hi toglleTaskDone clicked.");
     const updatedTasks = tasks.map((task) => {
@@ -70,7 +68,11 @@ function App() {
               onChange={(e) => setNewTaskTitle(e.target.value)}
             />
 
-            <select value={newTaskCategory} onChange={(e) => setNewTaskCategory(e.target.value)} className="border border-gray-300 px-4 py-2 rounded-lg">
+            <select
+              value={newTaskCategory}
+              onChange={(e) => setNewTaskCategory(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg"
+            >
               <option value="Work">Work</option>
               <option value="Personal">Personal</option>
               <option value="Coding">Coding</option>

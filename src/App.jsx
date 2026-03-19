@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskCard from "./components/TaskCard";
 import MainLayout from "./layouts/MainLayout";
 
@@ -25,6 +25,10 @@ function App() {
   ]);
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("dev-tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = () => {
     if (newTaskTitle.trim() === "") return;

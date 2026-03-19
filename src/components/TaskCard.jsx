@@ -63,7 +63,7 @@ const TaskCard = ({
           className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
         >
           X
-        </button>
+        </button> 
       </div>
     </div>
   );

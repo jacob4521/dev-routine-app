@@ -3,26 +3,11 @@ import TaskCard from "./components/TaskCard";
 import MainLayout from "./layouts/MainLayout";
 
 function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Learn React State",
-      category: "Learning",
-      completed: false,
-    },
-    {
-      id: 2,
-      title: "30 mins Morning Workout",
-      category: "Exercise",
-      completed: true,
-    },
-    {
-      id: 3,
-      title: "Build DevRoutine UI",
-      category: "Coding",
-      completed: false,
-    },
-  ]);
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem("dev-tasks");
+
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
 

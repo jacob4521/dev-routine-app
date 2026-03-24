@@ -9,6 +9,16 @@ function App() {
     return savedTasks ? JSON.parse(savedTasks) : [];
   });
 
+  const [inboxIdeas, setInboxIdeas] = useState(() => {
+    const savedIdeas = localStorage.getItem("dev-ideas");
+
+    return savedIdeas ? JSON.parse(savedIdeas) : [];
+  });
+
+  const [newIdeaTitle, setNewIdeaTitle] = useState("");
+
+  const [activeTab, setActiveTab] = useState("tasks");
+
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
@@ -23,6 +33,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("dev-tasks", JSON.stringify(tasks));
   }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem("dev-ideas", JSON.stringify(inboxIdeas));
+  }, [inboxIdeas]);
 
   const handleAddTask = () => {
     if (newTaskTitle.trim() === "") return;
@@ -65,72 +79,107 @@ function App() {
     });
     setTasks(updatedTasks);
   };
+
+  const handleAddIdea = (ideaTitle) => {
+    if (ideaTitle.trim() === "") return;
+
+    const newIdea = {
+      id: Date.now(),
+      title: ideaTitle,
+    };
+
+    setInboxIdeas([newIdea, ...inboxIdeas]);
+    setNewIdeaTitle("");
+  };
   return (
     <MainLayout>
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
       <div>
         <h2 className="text-3xl font-bold">Welcome to Dashboard! 🚀</h2>
 
-        <div className="max-w-2xl">
-          <h3 className="text-xl font-semibold text-gray-700 mb-4">
-            Today's Tasks
-          </h3>
+        <div>
+          <button onClick={() => setActiveTab("tasks")}>📋 My Tasks</button>
+          <button onClick={() => setActiveTab("ideas")}>💡 Idea Inbox</button>
+        </div>
 
-          <div className="mb-6 flex gap-2">
+        {activeTab === "tasks" && (
+          <div className="max-w-2xl">
+            <h3 className="text-xl font-semibold text-gray-700 mb-4">
+              Today's Tasks
+            </h3>
+
+            <div className="mb-6 flex gap-2">
+              <input
+                type="text"
+                placeholder="Add a new task..."
+                className="border border-gray-300 px-4 py-2 rounded-lg w-full"
+                value={newTaskTitle}
+                onChange={(e) => setNewTaskTitle(e.target.value)}
+              />
+
+              <select
+                value={newTaskCategory}
+                onChange={(e) => setNewTaskCategory(e.target.value)}
+                className="border border-gray-300 px-4 py-2 rounded-lg"
+              >
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Coding">Coding</option>
+                <option value="Studdy">Studdy</option>
+              </select>
+
+              <button
+                onClick={handleAddTask}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+            <div className="space-y-4">
+              {tasks.length === 0 ? (
+                <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                  <p className="text-4xl mb-2">☕</p>
+                  <h3 className="text-lg font-semibold text-gray-600">
+                    All done!
+                  </h3>
+                  <p className="text-gray-600">
+                    You have completed all your tasks for today!, take some
+                    rest.
+                  </p>
+                </div>
+              ) : (
+                tasks.map((task) => (
+                  <TaskCard
+                    key={task.id}
+                    id={task.id}
+                    title={task.title}
+                    category={task.category}
+                    completed={task.completed}
+                    onToggle={toggleTaskDone}
+                    onDelete={deleteTask}
+                    onUpdate={updateTask}
+                    categoryColors={categoryColors[task.category]}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === "ideas" && (
+          <div>
             <input
               type="text"
-              placeholder="Add a new task..."
-              className="border border-gray-300 px-4 py-2 rounded-lg w-full"
-              value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value)}
+              value={newIdeaTitle}
+              onChange={(e) => setNewIdeaTitle(e.target.value)}
             />
+            <button onClick={() => handleAddIdea(newIdeaTitle)}>Add</button>
 
-            <select
-              value={newTaskCategory}
-              onChange={(e) => setNewTaskCategory(e.target.value)}
-              className="border border-gray-300 px-4 py-2 rounded-lg"
-            >
-              <option value="Work">Work</option>
-              <option value="Personal">Personal</option>
-              <option value="Coding">Coding</option>
-              <option value="Studdy">Studdy</option>
-            </select>
-
-            <button
-              onClick={handleAddTask}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Add
-            </button>
+            {inboxIdeas.map((idea) => (
+              <div key={idea.id}>{idea.title}</div>
+            ))}
           </div>
-          <div className="space-y-4">
-            {tasks.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                <p className="text-4xl mb-2">☕</p>
-                <h3 className="text-lg font-semibold text-gray-600">
-                  All done!
-                </h3>
-                <p className="text-gray-600">
-                  You have completed all your tasks for today!, take some rest.
-                </p>
-              </div>
-            ) : (
-              tasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  id={task.id}
-                  title={task.title}
-                  category={task.category}
-                  completed={task.completed}
-                  onToggle={toggleTaskDone}
-                  onDelete={deleteTask}
-                  onUpdate={updateTask}
-                  categoryColors={categoryColors[task.category]}
-                />
-              ))
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </MainLayout>
   );

@@ -13,6 +13,13 @@ function App() {
 
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
 
+  const categoryColors = {
+    Work: "bg-red-100 text-red-600",
+    Personal: "bg-green-100 text-green-600",
+    Coding: "bg-purple-100 text-purple-600",
+    Studdy: "bg-yellow-100 text-yellow-600",
+  };
+
   useEffect(() => {
     localStorage.setItem("dev-tasks", JSON.stringify(tasks));
   }, [tasks]);
@@ -118,6 +125,7 @@ function App() {
                   onToggle={toggleTaskDone}
                   onDelete={deleteTask}
                   onUpdate={updateTask}
+                  categoryColors={categoryColors[task.category]}
                 />
               ))
             )}

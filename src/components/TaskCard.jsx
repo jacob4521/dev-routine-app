@@ -8,6 +8,7 @@ const TaskCard = ({
   onToggle,
   onDelete,
   onUpdate,
+  categoryColors,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -36,7 +37,9 @@ const TaskCard = ({
           </h2>
         )}
 
-        <p className="text-xs font-medium px-2 py-1 bg-blue-50 text-blue-600 rounded-md mt-1 inline-block">
+        <p
+          className={`text-xs font-medium px-2 py-1 ${categoryColors} rounded-md mt-1 inline-block`}
+        >
           {category}
         </p>
       </div>
@@ -63,7 +66,7 @@ const TaskCard = ({
           className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
         >
           X
-        </button> 
+        </button>
       </div>
     </div>
   );

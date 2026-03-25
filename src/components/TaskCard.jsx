@@ -100,6 +100,12 @@ const TaskCard = ({
               setSubTaskTitle("");
             }}
             className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-4 py-1.5 text-sm rounded-md font-medium transition-colors whitespace-nowrap"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && subTaskTitle.trim() !== "") {
+                handleAddSubTask(id, subTaskTitle);
+                setSubTaskTitle("");
+              }
+            }}
           >
             Add Step
           </button>

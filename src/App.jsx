@@ -152,8 +152,19 @@ function App() {
         <PomodoroTimer />
 
         <div>
-          <button onClick={() => setActiveTab("tasks")}>📋 My Tasks</button>
-          <button onClick={() => setActiveTab("ideas")}>💡 Idea Inbox</button>
+          <button
+            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "tasks" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
+            onClick={() => setActiveTab("tasks")}
+          >
+            📋 My Tasks
+          </button>
+
+          <button
+            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "ideas" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
+            onClick={() => setActiveTab("ideas")}
+          >
+            💡 Idea Inbox
+          </button>
         </div>
 
         {activeTab === "tasks" && (

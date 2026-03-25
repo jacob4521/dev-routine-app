@@ -17,9 +17,9 @@ function App() {
 
   const [newIdeaTitle, setNewIdeaTitle] = useState("");
 
-  const [activeTab, setActiveTab] = useState("tasks");
-
   const [newTaskTitle, setNewTaskTitle] = useState("");
+
+  const [activeTab, setActiveTab] = useState("tasks");
 
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
 
@@ -46,6 +46,7 @@ function App() {
       title: newTaskTitle,
       category: newTaskCategory,
       completed: false,
+      subTasks: [],
     };
 
     setTasks([newTask, ...tasks]);
@@ -91,6 +92,54 @@ function App() {
     setInboxIdeas([newIdea, ...inboxIdeas]);
     setNewIdeaTitle("");
   };
+
+  const handlePlanIdea = (idea) => {
+    setNewTaskTitle(idea.title);
+    setActiveTab("tasks");
+
+    const remainingIdeas = inboxIdeas.filter((item) => item.id !== idea.id);
+    setInboxIdeas(remainingIdeas);
+  };
+
+  const handleAddSubTask = (taskId, subTaskTitle) => {
+    if (subTaskTitle === "") return;
+
+    const updateTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          subTasks: [
+            ...task.subTasks,
+            {
+              id: Date.now(),
+              title: subTaskTitle,
+              completed: false,
+            },
+          ],
+        };
+      }
+      return task;
+    });
+    setTasks(updateTasks);
+  };
+
+  const toggleSubTaskDone = (taskId, subTaskId) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        const updatedSubTasks = task.subTasks.map((subTask) => {
+          if (subTask.id === subTaskId) {
+            return { ...subTask, completed: !subTask.completed };
+          }
+          return subTask;
+        });
+        return { ...task, subTasks: updatedSubTasks };
+      }
+      return task;
+    });
+
+    setTasks(updatedTasks);
+  };
+
   return (
     <MainLayout>
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
@@ -159,6 +208,9 @@ function App() {
                     onDelete={deleteTask}
                     onUpdate={updateTask}
                     categoryColors={categoryColors[task.category]}
+                    handleAddSubTask={handleAddSubTask}
+                    subTasks={task.subTasks}
+                    toggleSubTaskDone={toggleSubTaskDone}
                   />
                 ))
               )}
@@ -176,7 +228,10 @@ function App() {
             <button onClick={() => handleAddIdea(newIdeaTitle)}>Add</button>
 
             {inboxIdeas.map((idea) => (
-              <div key={idea.id}>{idea.title}</div>
+              <div key={idea.id}>
+                {idea.title}
+                <button onClick={() => handlePlanIdea(idea)}>Plan Idea</button>
+              </div>
             ))}
           </div>
         )}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TaskCard from "./components/TaskCard";
 import MainLayout from "./layouts/MainLayout";
+import IdeaInbox from "./components/IdeaInbox";
 
 function App() {
   const [tasks, setTasks] = useState(() => {
@@ -219,21 +220,13 @@ function App() {
         )}
 
         {activeTab === "ideas" && (
-          <div>
-            <input
-              type="text"
-              value={newIdeaTitle}
-              onChange={(e) => setNewIdeaTitle(e.target.value)}
-            />
-            <button onClick={() => handleAddIdea(newIdeaTitle)}>Add</button>
-
-            {inboxIdeas.map((idea) => (
-              <div key={idea.id}>
-                {idea.title}
-                <button onClick={() => handlePlanIdea(idea)}>Plan Idea</button>
-              </div>
-            ))}
-          </div>
+          <IdeaInbox
+            newIdeaTitle={newIdeaTitle}
+            setNewIdeaTitle={setNewIdeaTitle}
+            handleAddIdea={handleAddIdea}
+            inboxIdeas={inboxIdeas}
+            handlePlanIdea={handlePlanIdea}
+          />
         )}
       </div>
     </MainLayout>

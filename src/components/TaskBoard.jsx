@@ -17,7 +17,7 @@ const TaskBoard = ({
 }) => {
   return (
     <div className="max-w-2xl">
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">
+      <h3 className="text-xl font-semibold text-gray-700 mb-4 mt-4">
         Today's Tasks
       </h3>
 

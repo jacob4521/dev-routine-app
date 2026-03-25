@@ -26,6 +26,8 @@ function App() {
 
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
 
+  const [planningIdeaId, setPlanningIdeaId] = useState(null);
+
   const categoryColors = {
     Work: "bg-red-100 text-red-600",
     Personal: "bg-green-100 text-green-600",
@@ -53,6 +55,14 @@ function App() {
     };
 
     setTasks([newTask, ...tasks]);
+
+    if (planningIdeaId) {
+      const remaingIdeas = inboxIdeas.filter(
+        (idea) => idea.id !== planningIdeaId,
+      );
+      setInboxIdeas(remaingIdeas);
+      setPlanningIdeaId(null);
+    }
 
     setNewTaskTitle("");
     setNewTaskCategory("Work");
@@ -99,8 +109,11 @@ function App() {
   const handlePlanIdea = (idea) => {
     setNewTaskTitle(idea.title);
     setActiveTab("tasks");
+    setPlanningIdeaId(idea.id);
+  };
 
-    const remainingIdeas = inboxIdeas.filter((item) => item.id !== idea.id);
+  const deleteIdea = (ideaId) => {
+    const remainingIdeas = inboxIdeas.filter((idea) => idea.id !== ideaId);
     setInboxIdeas(remainingIdeas);
   };
 
@@ -191,6 +204,7 @@ function App() {
             handleAddIdea={handleAddIdea}
             inboxIdeas={inboxIdeas}
             handlePlanIdea={handlePlanIdea}
+            deleteIdea={deleteIdea}
           />
         )}
       </div>

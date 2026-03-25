@@ -3,6 +3,7 @@ import TaskCard from "./components/TaskCard";
 import MainLayout from "./layouts/MainLayout";
 import IdeaInbox from "./components/IdeaInbox";
 import TaskBoard from "./components/TaskBoard";
+import PomodoroTimer from "./components/PomodoroTimer";
 
 function App() {
   const [tasks, setTasks] = useState(() => {
@@ -147,6 +148,8 @@ function App() {
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
       <div>
         <h2 className="text-3xl font-bold">Welcome to Dashboard! 🚀</h2>
+
+        <PomodoroTimer />
 
         <div>
           <button onClick={() => setActiveTab("tasks")}>📋 My Tasks</button>

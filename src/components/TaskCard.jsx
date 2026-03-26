@@ -84,7 +84,7 @@ const TaskCard = ({
             value={subTaskTitle}
             onChange={(e) => setSubTaskTitle(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && setSubTaskTitle.trim() !== "") {
+              if (e.key === "Enter" && subTaskTitle.trim() !== "") {
                 handleAddSubTask(id, subTaskTitle);
                 setSubTaskTitle("");
               }

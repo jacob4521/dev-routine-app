@@ -14,6 +14,7 @@ const TaskBoard = ({
   categoryColors,
   handleAddSubTask,
   toggleSubTaskDone,
+  deleteSubTask,
 }) => {
   return (
     <div className="max-w-2xl">
@@ -72,6 +73,7 @@ const TaskBoard = ({
               handleAddSubTask={handleAddSubTask}
               subTasks={task.subTasks}
               toggleSubTaskDone={toggleSubTaskDone}
+              deleteSubTask={deleteSubTask}
             />
           ))
         )}

@@ -12,6 +12,7 @@ const TaskCard = ({
   handleAddSubTask,
   subTasks,
   toggleSubTaskDone,
+  deleteSubTask,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -70,7 +71,7 @@ const TaskCard = ({
             onClick={() => onDelete(id)}
             className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
           >
-            X
+            ✕
           </button>
         </div>
       </div>
@@ -80,7 +81,7 @@ const TaskCard = ({
           <input
             type="text"
             placeholder="Add a small step..."
-            className="flex-1 border-gray-200 px-3 py-1.5 text-sm rounded-md outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50 focus:bg-white"
+            className="flex-1 border-gray-200 border-2 px-3 py-1.5 text-sm rounded-md outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50 focus:bg-white"
             value={subTaskTitle}
             onChange={(e) => setSubTaskTitle(e.target.value)}
             onKeyDown={(e) => {
@@ -124,6 +125,17 @@ const TaskCard = ({
             >
               {subTask.title}
             </span>
+
+            <button
+              onClick={() => {
+                if (!subTask.completed) {
+                  deleteSubTask(id, subTask.id);
+                }
+              }}
+              className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
+            >
+              ✕
+            </button>
           </li>
         ))}
       </ul>

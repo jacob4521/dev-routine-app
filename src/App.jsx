@@ -22,7 +22,7 @@ function App() {
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
-  const [activeTab, setActiveTab] = useState("tasks");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
 
@@ -156,14 +156,31 @@ function App() {
     setTasks(updatedTasks);
   };
 
+  const deleteSubTask = (taskId, subTaskId) => {
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        const reamainingSubTasks = task.subTasks.filter((subTask) => {
+          return subTask.id !== subTaskId;
+        });
+        return { ...task, subTasks: reamainingSubTasks };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  };
+
   return (
-    <MainLayout>
+    <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {activeTab === "dashboard" && (
+        <div>
+          <h2 className="text-3xl font-bold mb-6">Welcome to Dashboard! 🚀</h2>
+
+          <PomodoroTimer />
+        </div>
+      )}
+
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
       <div>
-        <h2 className="text-3xl font-bold">Welcome to Dashboard! 🚀</h2>
-
-        <PomodoroTimer />
-
         <div>
           <button
             className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "tasks" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
@@ -194,6 +211,7 @@ function App() {
             categoryColors={categoryColors}
             handleAddSubTask={handleAddSubTask}
             toggleSubTaskDone={toggleSubTaskDone}
+            deleteSubTask={deleteSubTask}
           />
         )}
 

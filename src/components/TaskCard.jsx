@@ -25,7 +25,7 @@ const TaskCard = ({
 
   return (
     <div className="bg-white p-4 shadow-md border border-gray-100 flex flex-col gap-4">
-      <div className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center border border-gray-100">
+      <div className=" flex justify-between items-center">
         <div>
           {isEditing ? (
             <input
@@ -96,9 +96,8 @@ const TaskCard = ({
             onClick={() => {
               if (subTaskTitle.trim() !== "") {
                 handleAddSubTask(id, subTaskTitle);
+                setSubTaskTitle("");
               }
-              handleAddSubTask(id, subTaskTitle);
-              setSubTaskTitle("");
             }}
             className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-4 py-1.5 text-sm rounded-md font-medium transition-colors whitespace-nowrap"
           >
@@ -111,7 +110,7 @@ const TaskCard = ({
         {subTasks?.map((subTask) => (
           <li
             key={subTask.id}
-            className="flex items-center gap-3 text-sm p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group:"
+            className="flex items-center gap-3 text-sm p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group"
           >
             <input
               type="checkbox"

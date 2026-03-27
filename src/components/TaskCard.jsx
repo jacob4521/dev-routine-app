@@ -95,7 +95,7 @@ const TaskCard = ({
           <button
             onClick={() => {
               if (subTaskTitle.trim() !== "") {
-                handleAddSubTask(id, subTaskTitle);
+                handleAddSubTask(id, subTaskTitle, category);
                 setSubTaskTitle("");
               }
             }}

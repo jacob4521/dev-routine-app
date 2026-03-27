@@ -51,7 +51,7 @@ function App() {
       title: newTaskTitle,
       category: newTaskCategory,
       completed: false,
-      subTasks: [],
+      parentId: null,
     };
 
     setTasks([newTask, ...tasks]);
@@ -117,26 +117,18 @@ function App() {
     setInboxIdeas(remainingIdeas);
   };
 
-  const handleAddSubTask = (taskId, subTaskTitle) => {
-    if (subTaskTitle === "") return;
+  const handleAddSubTask = (taskId, subTaskTitle, taskCategory) => {
+    if (subTaskTitle.trim() === "") return;
 
-    const updateTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          subTasks: [
-            ...task.subTasks,
-            {
-              id: Date.now(),
-              title: subTaskTitle,
-              completed: false,
-            },
-          ],
-        };
-      }
-      return task;
-    });
-    setTasks(updateTasks);
+    const newSubTask = {
+      id: Date.now(),
+      title: subTaskTitle,
+      category: taskCategory,
+      completed: false,
+      parentId: taskId,
+    };
+
+    setTasks([...tasks, newSubTask]);
   };
 
   const toggleSubTaskDone = (taskId, subTaskId) => {

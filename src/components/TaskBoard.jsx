@@ -22,6 +22,7 @@ const TaskBoard = ({
         Today's Tasks
       </h3>
 
+      {/* New Task Input */}
       <div className="mb-6 flex gap-2">
         <input
           type="text"
@@ -49,6 +50,8 @@ const TaskBoard = ({
           Add
         </button>
       </div>
+
+      {/* Task Cards */}
       <div className="space-y-4">
         {tasks.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
@@ -59,7 +62,7 @@ const TaskBoard = ({
             </p>
           </div>
         ) : (
-          tasks.map((task) => (
+          tasks.filter(t => t.parentId === null).map((task) => (
             <TaskCard
               key={task.id}
               id={task.id}
@@ -74,6 +77,7 @@ const TaskBoard = ({
               subTasks={task.subTasks}
               toggleSubTaskDone={toggleSubTaskDone}
               deleteSubTask={deleteSubTask}
+              allTasks={tasks}
             />
           ))
         )}

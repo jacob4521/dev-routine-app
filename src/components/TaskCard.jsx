@@ -10,9 +10,9 @@ const TaskCard = ({
   onUpdate,
   categoryColors,
   handleAddSubTask,
-  subTasks,
   toggleSubTaskDone,
   deleteSubTask,
+  allTasks,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -25,6 +25,7 @@ const TaskCard = ({
 
   return (
     <div className="bg-white p-4 shadow-md border border-gray-100 flex flex-col gap-4">
+      {/* Task Title */}
       <div className=" flex justify-between items-center">
         <div>
           {isEditing ? (
@@ -50,6 +51,7 @@ const TaskCard = ({
           </p>
         </div>
 
+        {/* Task Actions */}
         <div className="flex gap-3 items-center">
           <button
             onClick={() => onToggle(id)}
@@ -61,12 +63,14 @@ const TaskCard = ({
           >
             {completed && <span className="text-white text-xs">✔</span>}
           </button>
+
           <button
             onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
             className="text-blue-500 hover:bg-blue-50 px-2 py-1 rounded-md transition-colors text-sm font-medium"
           >
             {isEditing ? "Save" : "Edit"}
           </button>
+
           <button
             onClick={() => onDelete(id)}
             className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
@@ -76,7 +80,9 @@ const TaskCard = ({
         </div>
       </div>
 
+      {/* SubTasks */}
       <div className="border-t border-gray-100 pt-4 mt-2">
+        {/* SubTask Input */}
         <div className="flex gap-2 mb-4">
           <input
             type="text"
@@ -106,7 +112,37 @@ const TaskCard = ({
         </div>
       </div>
 
-      <ul className="space-y-1.5">
+      {allTasks.filter((task) => task.parentId === id).length > 0 && (
+        <div className="ml-6 pl-4 border-l-2 border-gray-200 mt-4 flex flex-col gap-4">
+          {allTasks
+            .filter((task) => task.parentId === id)
+            .map((subTask) => (
+              <TaskCard
+                key={subTask.id}
+                id={subTask.id}
+                title={subTask.title}
+                category={subTask.category}
+                completed={subTask.completed}
+                allTasks={allTasks}
+                onToggle={onToggle}
+                onDelete={onDelete}
+                onUpdate={onUpdate}
+                categoryColors={categoryColors}
+                handleAddSubTask={handleAddSubTask}
+                toggleSubTaskDone={toggleSubTaskDone}
+                deleteSubTask={deleteSubTask}
+              />
+            ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TaskCard;
+
+{
+  /*      <ul className="space-y-1.5">
         {subTasks?.map((subTask) => (
           <li
             key={subTask.id}
@@ -138,8 +174,5 @@ const TaskCard = ({
           </li>
         ))}
       </ul>
-    </div>
-  );
-};
-
-export default TaskCard;
+ */
+}

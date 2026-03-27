@@ -17,11 +17,16 @@ const TaskCard = ({
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
   const [subTaskTitle, setSubTaskTitle] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isAddingSubTask, setIsAddingSubTask] = useState(false);
 
   const handleSave = () => {
     onUpdate(id, newTitle);
     setIsEditing(false);
   };
+
+  const hasSubTasks =
+    allTasks.filter((task) => task.parentId === id).length > 0;
 
   return (
     <div className="bg-white p-4 shadow-md border border-gray-100 flex flex-col gap-4">
@@ -83,36 +88,54 @@ const TaskCard = ({
       {/* SubTasks */}
       <div className="border-t border-gray-100 pt-4 mt-2">
         {/* SubTask Input */}
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            placeholder="Add a small step..."
-            className="flex-1 border-gray-200 border-2 px-3 py-1.5 text-sm rounded-md outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50 focus:bg-white"
-            value={subTaskTitle}
-            onChange={(e) => setSubTaskTitle(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && subTaskTitle.trim() !== "") {
-                handleAddSubTask(id, subTaskTitle);
-                setSubTaskTitle("");
-              }
-            }}
-          />
+        {isAddingSubTask && (
+          <div className="flex gap-2 mb-4">
+            <input
+              type="text"
+              placeholder="Add a small step..."
+              className="flex-1 border-gray-200 border-2 px-3 py-1.5 text-sm rounded-md outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all bg-gray-50 focus:bg-white"
+              value={subTaskTitle}
+              onChange={(e) => setSubTaskTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && subTaskTitle.trim() !== "") {
+                  handleAddSubTask(id, subTaskTitle);
+                  setSubTaskTitle("");
+                }
+              }}
+            />
 
+            <button
+              onClick={() => {
+                if (subTaskTitle.trim() !== "") {
+                  handleAddSubTask(id, subTaskTitle, category);
+                  setSubTaskTitle("");
+                }
+              }}
+              className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-4 py-1.5 text-sm rounded-md font-medium transition-colors whitespace-nowrap"
+            >
+              Add Step
+            </button>
+          </div>
+        )}
+        <div className="flex gap-2">
           <button
-            onClick={() => {
-              if (subTaskTitle.trim() !== "") {
-                handleAddSubTask(id, subTaskTitle, category);
-                setSubTaskTitle("");
-              }
-            }}
-            className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-4 py-1.5 text-sm rounded-md font-medium transition-colors whitespace-nowrap"
+            onClick={() => setIsAddingSubTask(!isAddingSubTask)}
+            className="hover:bg-gray-200 rounded-sm p-1"
           >
-            Add Step
+            {isAddingSubTask ? "X" : "➕"}
           </button>
+          {hasSubTasks && (
+            <button
+              className="hover:bg-gray-200 rounded-sm p-1"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              {isExpanded ? "🔽" : "▶️"}
+            </button>
+          )}
         </div>
       </div>
 
-      {allTasks.filter((task) => task.parentId === id).length > 0 && (
+      {isExpanded && hasSubTasks && (
         <div className="ml-6 pl-4 border-l-2 border-gray-200 mt-4 flex flex-col gap-4">
           {allTasks
             .filter((task) => task.parentId === id)

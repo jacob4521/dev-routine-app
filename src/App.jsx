@@ -6,6 +6,8 @@ import TaskBoard from "./components/TaskBoard";
 import PomodoroTimer from "./components/PomodoroTimer";
 
 function App() {
+  const [runningTaskId, setRunningTaskId] = useState(null);
+
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("dev-tasks");
 
@@ -43,6 +45,28 @@ function App() {
     localStorage.setItem("dev-ideas", JSON.stringify(inboxIdeas));
   }, [inboxIdeas]);
 
+  useEffect(() => {
+    let interval;
+
+    if (runningTaskId) {
+      interval = setInterval(() => {
+        setTasks(
+          (prevTasks) =>
+            prevTasks.map((task) =>
+              task.id === runningTaskId
+                ? { ...task, timeSpent: (task.timeSpent || 0) + 1 }
+                : task,
+            ),
+          1000,
+        );
+      });
+    } else {
+      clearInterval(interval);
+    }
+
+    return () => clearInterval(interval);
+  }, [runningTaskId]);
+
   const handleAddTask = () => {
     if (newTaskTitle.trim() === "") return;
 
@@ -69,8 +93,16 @@ function App() {
   };
 
   const deleteTask = (taskID) => {
-    const remainingTasks = tasks.filter((task) => task.id !== taskID);
-    setTasks(remainingTasks);
+    let taskCompleted;
+    tasks.map((task) =>
+      task.id === taskID ? (taskCompleted = task.completed) : null,
+    );
+    console.log(taskCompleted);
+
+    if (taskCompleted === false) {
+      const remainingTasks = tasks.filter((task) => task.id !== taskID);
+      setTasks(remainingTasks);
+    }
   };
 
   const updateTask = (id, newTitle) => {
@@ -84,7 +116,6 @@ function App() {
   };
 
   const toggleTaskDone = (taskID) => {
-    console.log("Hi toglleTaskDone clicked.");
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskID) {
         return { ...task, completed: !task.completed };
@@ -161,6 +192,14 @@ function App() {
     setTasks(updatedTasks);
   };
 
+  const toggleTimer = (taskId) => {
+    if (runningTaskId === taskId) {
+      setRunningTaskId(null);
+    } else {
+      setRunningTaskId(taskId);
+    }
+  };
+
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "dashboard" && (
@@ -204,6 +243,8 @@ function App() {
             handleAddSubTask={handleAddSubTask}
             toggleSubTaskDone={toggleSubTaskDone}
             deleteSubTask={deleteSubTask}
+            runningTaskId={runningTaskId}
+            toggleTimer={toggleTimer}
           />
         )}
 

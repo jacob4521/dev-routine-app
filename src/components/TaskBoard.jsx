@@ -15,6 +15,8 @@ const TaskBoard = ({
   handleAddSubTask,
   toggleSubTaskDone,
   deleteSubTask,
+  runningTaskId,
+  toggleTimer,
 }) => {
   return (
     <div className="max-w-2xl">
@@ -62,24 +64,30 @@ const TaskBoard = ({
             </p>
           </div>
         ) : (
-          tasks.filter(t => t.parentId === null).map((task) => (
-            <TaskCard
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              category={task.category}
-              completed={task.completed}
-              onToggle={toggleTaskDone}
-              onDelete={deleteTask}
-              onUpdate={updateTask}
-              categoryColors={categoryColors[task.category]}
-              handleAddSubTask={handleAddSubTask}
-              subTasks={task.subTasks}
-              toggleSubTaskDone={toggleSubTaskDone}
-              deleteSubTask={deleteSubTask}
-              allTasks={tasks}
-            />
-          ))
+          tasks
+            .filter((t) => t.parentId === null)
+            .map((task) => (
+              <TaskCard
+                key={task.id}
+                id={task.id}
+                title={task.title}
+                category={task.category}
+                completed={task.completed}
+                onToggle={toggleTaskDone}
+                onDelete={deleteTask}
+                onUpdate={updateTask}
+                categoryColors={categoryColors[task.category]}
+                handleAddSubTask={handleAddSubTask}
+                subTasks={task.subTasks}
+                toggleSubTaskDone={toggleSubTaskDone}
+                deleteSubTask={deleteSubTask}
+                allTasks={tasks}
+                runningTaskId={runningTaskId}
+                toggleTimer={toggleTimer}
+                parentId={task.parentId}
+                timeSpent={task.timeSpent}
+              />
+            ))
         )}
       </div>
     </div>

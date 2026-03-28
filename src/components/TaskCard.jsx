@@ -13,6 +13,10 @@ const TaskCard = ({
   toggleSubTaskDone,
   deleteSubTask,
   allTasks,
+  runningTaskId,
+  toggleTimer,
+  parentId,
+  timeSpent,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -25,8 +29,27 @@ const TaskCard = ({
     setIsEditing(false);
   };
 
+  const formatTime = (totalSeconds) => {
+    if (!totalSeconds) return "00:00:00";
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = Math.floor(totalSeconds % 60);
+
+    return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   const hasSubTasks =
     allTasks.filter((task) => task.parentId === id).length > 0;
+
+  // මේ Task එකේ සහ මෙයාගේ යටතේ ඉන්න හැම Subtask එකකම මුළු වෙලාව එකතු කරන Function එක
+  const getTotalTime = () => {
+    const ownTime = timeSpent || 0;
+    const subTasksTime = allTasks
+      .filter((t) => t.parentId === id)
+      .reduce((sum, sub) => sum + (sub.timeSpent || 0), 0);
+
+    return ownTime + subTasksTime;
+  };
 
   return (
     <div className="bg-white p-4 shadow-md border border-gray-100 flex flex-col gap-4">
@@ -83,6 +106,25 @@ const TaskCard = ({
             ✕
           </button>
         </div>
+
+        <div className="flex items-center gap-2 mr-4">
+          {/* වෙලාව පෙන්වන තැන */}
+          <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+            {formatTime(parentId ? timeSpent : getTotalTime())}
+          </span>
+
+          {/* Start/Stop Button */}
+          <button
+            onClick={() => toggleTimer(id)}
+            className={`p-1.5 rounded-full transition-colors ${
+              runningTaskId === id
+                ? "bg-red-100 text-red-600 animate-pulse"
+                : "bg-blue-100 text-blue-600 hover:bg-blue-200"
+            }`}
+          >
+            {runningTaskId === id ? "⏹" : "▶️"}
+          </button>
+        </div>
       </div>
 
       {/* SubTasks */}
@@ -98,7 +140,7 @@ const TaskCard = ({
               onChange={(e) => setSubTaskTitle(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && subTaskTitle.trim() !== "") {
-                  handleAddSubTask(id, subTaskTitle);
+                  handleAddSubTask(id, subTaskTitle, category);
                   setSubTaskTitle("");
                 }
               }}
@@ -154,6 +196,10 @@ const TaskCard = ({
                 handleAddSubTask={handleAddSubTask}
                 toggleSubTaskDone={toggleSubTaskDone}
                 deleteSubTask={deleteSubTask}
+                runningTaskId={runningTaskId}
+                toggleTimer={toggleTimer}
+                parentId={subTask.parentId}
+                timeSpent={subTask.timeSpent}
               />
             ))}
         </div>
@@ -163,39 +209,3 @@ const TaskCard = ({
 };
 
 export default TaskCard;
-
-{
-  /*      <ul className="space-y-1.5">
-        {subTasks?.map((subTask) => (
-          <li
-            key={subTask.id}
-            className="flex items-center gap-3 text-sm p-2 rounded-md hover:bg-gray-50 border border-transparent hover:border-gray-100 transition-all group"
-          >
-            <input
-              type="checkbox"
-              checked={subTask.completed}
-              onChange={() => toggleSubTaskDone(id, subTask.id)}
-              className="cursor-pointer w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-            />
-
-            <span
-              className={`flex-1 transition-colors duration-200 ${subTask.completed ? "line-through text-gray-400" : "text-gray-700 font-medium"}`}
-            >
-              {subTask.title}
-            </span>
-
-            <button
-              onClick={() => {
-                if (!subTask.completed) {
-                  deleteSubTask(id, subTask.id);
-                }
-              }}
-              className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
-            >
-              ✕
-            </button>
-          </li>
-        ))}
-      </ul>
- */
-}

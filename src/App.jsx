@@ -4,6 +4,7 @@ import MainLayout from "./layouts/MainLayout";
 import IdeaInbox from "./components/IdeaInbox";
 import TaskBoard from "./components/TaskBoard";
 import PomodoroTimer from "./components/PomodoroTimer";
+import SidebarPreview from "./components/SidebarPreview";
 
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);

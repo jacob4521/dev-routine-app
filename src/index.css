@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+
+@theme {
+  /* Surfaces / Backgrounds */
+  --color-surface-backdrop: #FFD79C;
+  --color-surface-base: #FFFFFF;
+  --color-surface-sidebar: #FDE4CD;
+  
+  /* Primary Brand Colors */
+  --color-primary-base: #4E8DFF;
+  
+  /* Text Colors */
+  --color-text-main: #1F2937;
+  --color-text-muted: #6B7280;
+}

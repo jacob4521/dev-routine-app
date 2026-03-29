@@ -13,8 +13,6 @@ const TaskBoard = ({
   toggleTaskDone,
   categoryColors,
   handleAddSubTask,
-  toggleSubTaskDone,
-  deleteSubTask,
   runningTaskId,
   toggleTimer,
 }) => {
@@ -79,8 +77,6 @@ const TaskBoard = ({
                 categoryColors={categoryColors[task.category]}
                 handleAddSubTask={handleAddSubTask}
                 subTasks={task.subTasks}
-                toggleSubTaskDone={toggleSubTaskDone}
-                deleteSubTask={deleteSubTask}
                 allTasks={tasks}
                 runningTaskId={runningTaskId}
                 toggleTimer={toggleTimer}

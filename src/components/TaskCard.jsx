@@ -10,13 +10,12 @@ const TaskCard = ({
   onUpdate,
   categoryColors,
   handleAddSubTask,
-  toggleSubTaskDone,
-  deleteSubTask,
   allTasks,
   runningTaskId,
   toggleTimer,
   parentId,
   timeSpent,
+  isSubTask = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(title);
@@ -52,78 +51,40 @@ const TaskCard = ({
   };
 
   return (
-    <div className="bg-white p-4 shadow-md border border-gray-100 flex flex-col gap-4">
-      {/* Task Title */}
-      <div className=" flex justify-between items-center">
-        <div>
-          {isEditing ? (
-            <input
-              type="text"
-              className="border border-blue-400 px-2 py-1 rounded w-full outline-none"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              autoFocus
-            />
-          ) : (
-            <h2
-              className={`font-bold ${completed ? "line-through text-gray-400" : "text-gray-800"}`}
+    <div
+      className={`group transition-all duration-200 ${isSubTask ? "bg-transparent py-2 pl-4 border-l-2 border-gray-200 hover:border-blue-400" : "bg-white p-5 rounded-xl shadow-sm border border-gray-200 mb-4 hover:shadow-md"}`}
+    >
+      {/* Task Header Area */}
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex items-start gap-3 flex-1">
+          <input
+            type="checkbox"
+            className="h-5 w-5 rounded appearance-none border border-gray-200 bg-gray-50 hover:border-blue-500 cursor-pointer mt-3"
+          />
+          <div className="flex flex-col">
+            <h2 className="font-semibold">The First Task</h2>
+            <button
+              disabled
+              className="text-xs bg-blue-100 rounded-xl text-blue-600 font-medium px-2 py-1 w-fit"
             >
-              {title}
-            </h2>
-          )}
-
-          <p
-            className={`text-xs font-medium px-2 py-1 ${categoryColors} rounded-md mt-1 inline-block`}
-          >
-            {category}
-          </p>
+              Work
+            </button>
+          </div>
         </div>
 
-        {/* Task Actions */}
-        <div className="flex gap-3 items-center">
-          <button
-            onClick={() => onToggle(id)}
-            className={`w-6 h-6 rounded-full border-2 cursor-pointer flex items-center justify-center transition-colors ${
-              completed
-                ? "bg-green-500 border-green-500"
-                : "border-gray-300 hover:border-green-500"
-            }`}
-          >
-            {completed && <span className="text-white text-xs">✔</span>}
-          </button>
-
-          <button
-            onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-            className="text-blue-500 hover:bg-blue-50 px-2 py-1 rounded-md transition-colors text-sm font-medium"
-          >
-            {isEditing ? "Save" : "Edit"}
-          </button>
-
-          <button
-            onClick={() => onDelete(id)}
-            className="text-gray-400 hover:text-white hover:bg-red-500 px-2 py-1 rounded-md transition-colors font-bold"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2 mr-4">
-          {/* වෙලාව පෙන්වන තැන */}
-          <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
-            {formatTime(parentId ? timeSpent : getTotalTime())}
-          </span>
-
-          {/* Start/Stop Button */}
-          <button
-            onClick={() => toggleTimer(id)}
-            className={`p-1.5 rounded-full transition-colors ${
-              runningTaskId === id
-                ? "bg-red-100 text-red-600 animate-pulse"
-                : "bg-blue-100 text-blue-600 hover:bg-blue-200"
-            }`}
-          >
-            {runningTaskId === id ? "⏹" : "▶️"}
-          </button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center">
+            <button className="border-gray-200 border bg-gray-50 px-2 py-1 rounded-l-lg text-xs">
+              00:00:00
+            </button>
+            <button className="border-gray-200 border px-2 py-1 rounded-r-lg text-xs">
+              ▶ Start
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <button className="">✏️</button>
+            <button className="">🗑️</button>
+          </div>
         </div>
       </div>
 
@@ -194,8 +155,6 @@ const TaskCard = ({
                 onUpdate={onUpdate}
                 categoryColors={categoryColors}
                 handleAddSubTask={handleAddSubTask}
-                toggleSubTaskDone={toggleSubTaskDone}
-                deleteSubTask={deleteSubTask}
                 runningTaskId={runningTaskId}
                 toggleTimer={toggleTimer}
                 parentId={subTask.parentId}

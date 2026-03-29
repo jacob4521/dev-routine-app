@@ -162,35 +162,7 @@ function App() {
     setTasks([...tasks, newSubTask]);
   };
 
-  const toggleSubTaskDone = (taskId, subTaskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        const updatedSubTasks = task.subTasks.map((subTask) => {
-          if (subTask.id === subTaskId) {
-            return { ...subTask, completed: !subTask.completed };
-          }
-          return subTask;
-        });
-        return { ...task, subTasks: updatedSubTasks };
-      }
-      return task;
-    });
 
-    setTasks(updatedTasks);
-  };
-
-  const deleteSubTask = (taskId, subTaskId) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === taskId) {
-        const reamainingSubTasks = task.subTasks.filter((subTask) => {
-          return subTask.id !== subTaskId;
-        });
-        return { ...task, subTasks: reamainingSubTasks };
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
-  };
 
   const toggleTimer = (taskId) => {
     if (runningTaskId === taskId) {
@@ -241,8 +213,6 @@ function App() {
             toggleTaskDone={toggleTaskDone}
             categoryColors={categoryColors}
             handleAddSubTask={handleAddSubTask}
-            toggleSubTaskDone={toggleSubTaskDone}
-            deleteSubTask={deleteSubTask}
             runningTaskId={runningTaskId}
             toggleTimer={toggleTimer}
           />

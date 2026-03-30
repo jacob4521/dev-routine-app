@@ -29,7 +29,7 @@ const MainLayout = ({ children }) => {
     <div className="flex flex-row h-screen overflow-hidden">
       <aside className="flex h-full">
         {/* Left Sidebar */}
-        <div className="flex flex-col justify-between w-16 h-screen bg-surface-backdrop">
+        <div className="flex flex-col justify-between w-18 pr-2 h-screen bg-surface-backdrop">
           <div className="flex flex-col pt-6 gap-9 items-center w-full -ml-1.5">
             <button>
               <HomeIcon size={20} strokeWidth={1.5} />
@@ -59,7 +59,7 @@ const MainLayout = ({ children }) => {
         </div>
 
         {/* Main Sidebar */}
-        <div className="w-50 scroll no-scrollbar h-full pb-10 flex flex-col justify-between rounded-l-2xl -ml-3 bg-white">
+        <div className="w-50 scroll no-scrollbar h-full pb-10 flex flex-col justify-between rounded-l-3xl -ml-5 bg-white">
           <div className="overflow-y-auto flex-1 no-scrollbar border-r border-gray-100">
             {/* Top Section */}
             <div className="flex flex-col gap-5 mt-8">

@@ -242,7 +242,7 @@ const TaskCard = ({
                 onClick={() => toggleTimer(id)}
                 className="flex items-center gap-2 bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-200 font-mono font-bold text-sm cursor-pointer"
               >
-                <button className="cursor-pointer">
+                <button className="cursor-pointer flex items-center gap-2">
                   {isRunning ? (
                     <Pause size={12} fill="currentColor" />
                   ) : (

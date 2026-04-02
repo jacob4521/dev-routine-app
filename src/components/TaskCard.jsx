@@ -26,7 +26,6 @@ const TaskCard = ({
   allTasks,
   runningTaskId,
   toggleTimer,
-  parentId,
   timeSpent,
   isSubTask = false,
 }) => {
@@ -37,8 +36,7 @@ const TaskCard = ({
 
   // Derived state
   const isRunning = runningTaskId === id;
-  const hasSubTasks =
-    allTasks && allTasks.filter((task) => task.parentId === id).length > 0;
+
   const catColors = categoryColors || {
     bg: "bg-gray-100",
     text: "text-gray-600",

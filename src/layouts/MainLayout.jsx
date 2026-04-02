@@ -23,14 +23,14 @@ import {
 } from "lucide-react";
 
 const MainLayout = ({ children }) => {
-  const [activeTab, isActiveTab] = useState("today");
+  const [activeTab, setActiveTab] = useState("today");
 
   return (
     <div className="flex flex-row h-screen overflow-hidden">
       <aside className="flex h-full">
         {/* Left Sidebar */}
         <div className="flex flex-col justify-between w-18 pr-2 h-screen bg-surface-backdrop">
-          <div className="flex flex-col pt-6 gap-9 items-center w-full -ml-1.5">
+          <div className="flex flex-col pt-6 gap-9 items-center w-full pr-4">
             <button>
               <HomeIcon size={20} strokeWidth={1.5} />
             </button>
@@ -59,10 +59,10 @@ const MainLayout = ({ children }) => {
         </div>
 
         {/* Main Sidebar */}
-        <div className="w-50 scroll no-scrollbar h-full pb-10 flex flex-col justify-between rounded-l-3xl -ml-5 bg-white">
+        <div className="w-50 no-scrollbar h-full pb-10 flex flex-col justify-between rounded-l-3xl -ml-5 bg-white">
           <div className="overflow-y-auto flex-1 no-scrollbar border-r border-gray-100">
             {/* Top Section */}
-            <div className="flex flex-col gap-5 mt-8">
+            <div className="flex flex-col gap-5 mt-8 px-6 w-full">
               <NavItem icon={<CalendarDaysIcon size={18} />} label="Allday" />
               <NavItem icon={<ClockIcon size={18} />} label="Today" />
               <NavItem icon={<Calendar1Icon size={18} />} label="Tomorrow" />
@@ -75,7 +75,7 @@ const MainLayout = ({ children }) => {
               <h2 className="uppercase text-xs mb-2 font-bold text-gray-400 ml-6">
                 Lists
               </h2>
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-5 px-6 w-full">
                 <NavItem icon={<BriefcaseIcon size={18} />} label="Work" />
                 <NavItem icon={<UserIcon size={18} />} label="Freelance" />
                 <NavItem icon={<ZapIcon size={18} />} label="Workout" />
@@ -118,7 +118,7 @@ function NavItem({ icon, label, active, id }) {
   const isActive = active === id;
 
   return (
-    <button className="flex gap-4 ml-6 text-gray-500 font-bold">
+    <button className="flex gap-4 text-gray-500 font-bold">
       <span>{icon}</span>
       <span className="text-sm ">{label}</span>
     </button>

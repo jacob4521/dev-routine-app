@@ -5,6 +5,7 @@ import IdeaInbox from "./components/IdeaInbox";
 import TaskBoard from "./components/TaskBoard";
 import PomodoroTimer from "./components/PomodoroTimer";
 import SidebarPreview from "./components/SidebarPreview";
+import TaskPractice from "./components/TaskPractice";
 
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);
@@ -163,8 +164,6 @@ function App() {
     setTasks([...tasks, newSubTask]);
   };
 
-
-
   const toggleTimer = (taskId) => {
     if (runningTaskId === taskId) {
       setRunningTaskId(null);
@@ -200,7 +199,7 @@ function App() {
             💡 Idea Inbox
           </button>
         </div>
-
+         
         {activeTab === "tasks" && (
           <TaskBoard
             newTaskTitle={newTaskTitle}
@@ -218,6 +217,7 @@ function App() {
             toggleTimer={toggleTimer}
           />
         )}
+        {/* {activeTab === "tasks" && <TaskPractice />} */}
 
         {activeTab === "ideas" && (
           <IdeaInbox

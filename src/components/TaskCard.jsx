@@ -10,9 +10,8 @@ import {
   Plus,
   Check,
   CheckCircle2,
+  Square,
 } from "lucide-react";
-
-import React from "react";
 
 const TaskCard = ({
   id,
@@ -29,6 +28,7 @@ const TaskCard = ({
   toggleTimer,
   parentId,
   timeSpent,
+  isSubTask = false,
 }) => {
   // Local state for managing subtasks and expansion
   const [isExpanded, setIsExpanded] = useState(false);
@@ -43,10 +43,231 @@ const TaskCard = ({
     bg: "bg-gray-100",
     text: "text-gray-600",
   };
+
+  const formatTime = (totalSeconds) => {
+    if (!totalSeconds) return "00:00:00";
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = Math.floor(totalSeconds % 60);
+    return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const subTaskCollapsed = (
+    <div className="flex flex-col gap-2 w-full mt-1">
+      <div className="group flex items-center justify-between w-full p-2 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-100">
+        <div className="flex items-center gap-3 flex-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(id);
+            }}
+            className="text-gray-300 hover:text-emerald-500 transition-colors"
+          >
+            {completed ? (
+              <CheckSquare className="text-emerald-500" size={18} />
+            ) : (
+              <Square className="text-gray-300" size={18} />
+            )}
+          </button>
+
+          <div
+            onClick={() => setIsExpanded(!isExpanded)}
+            className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
+          >
+            {title}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            className="text-gray-400 hover:text-gray-900 p-1 rounded-md hover:bg-gray-200 transition-colors"
+          >
+            <ChevronRight
+              size={16}
+              className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="pl-6 py-2 flex flex-col gap-2 w-full border-l-2 border-gray-100 ml-3">
+          {allTasks
+            .filter((task) => task.parentId === id)
+            .map((nestedSubTask) => (
+              <TaskCard
+                key={nestedSubTask.id}
+                {...nestedSubTask}
+                category={category}
+                onToggle={onToggle}
+                onDelete={onDelete}
+                onUpdate={onUpdate}
+                categoryColors={categoryColors}
+                handleAddSubTask={handleAddSubTask}
+                allTasks={allTasks}
+                runningTaskId={runningTaskId}
+                toggleTimer={toggleTimer}
+                isSubTask={true}
+              />
+            ))}
+
+          {/* Add Nested SubTask Area */}
+          {isAddingSubTask ? (
+            <div className="flex items-center gap-2 mt-1">
+              <input
+                type="text"
+                value={subTaskTitle}
+                onChange={(e) => setSubTaskTitle(e.target.value)}
+                placeholder="Add a step here..."
+                className="flex-1 px-3 py-1 text-sm border border-gray-200 rounded-md outline-none focus:border-orange-400"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && subTaskTitle.trim()) {
+                    handleAddSubTask(id, subTaskTitle, category);
+                    setSubTaskTitle("");
+                    setIsAddingSubTask(false);
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsAddingSubTask(true)}
+              className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-orange-500 transition-colors mt-1 w-fit"
+            >
+              <Plus size={14} strokeWidth={3} />
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderSubTasks = () => (
+    <div
+      className={`${isSubTask ? "ml-6 pl-2 mt-2" : "ml-10 pl-4"} border-l-2 border-gray-100 flex flex-col gap-2`}
+    >
+      {allTasks &&
+        allTasks
+          .filter((task) => task.parentId === id)
+          .map((subTask) => (
+            <TaskCard
+              key={subTask.id}
+              {...subTask}
+              category={category}
+              onToggle={onToggle}
+              onDelete={onDelete}
+              onUpdate={onUpdate}
+              categoryColors={categoryColors}
+              handleAddSubTask={handleAddSubTask}
+              allTasks={allTasks}
+              runningTaskId={runningTaskId}
+              toggleTimer={toggleTimer}
+              isSubTask={true}
+            />
+          ))}
+
+      {isAddingSubTask ? (
+        <div className="flex items-center gap-2 mt-1">
+          <input
+            type="text"
+            value={subTaskTitle}
+            onChange={(e) => setSubTaskTitle(e.target.value)}
+            placeholder={`${isSubTask ? "Add a nested step." : "Add a step."}`}
+            className="flex-1 px-3 py-1.5 text-sm border border-gray-200 rounded-md outline-none focus:border-orange-400 shadow-sm"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && subTaskTitle.trim()) {
+                handleAddSubTask(id, subTaskTitle, category);
+                setSubTaskTitle("");
+                setIsAddingSubTask(false);
+              }
+            }}
+            autoFocus
+          />
+        </div>
+      ) : (
+        <button
+          onClick={() => setIsAddingSubTask(true)}
+          className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-orange-500 transition-colors mt-1 w-fit py-1"
+        >
+          <Plus size={14} strokeWidth={3} />
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-3 w-full">
       {isExpanded ? (
-        <div className="bg-gray-100 p-4 rounded-xl">Expanded Card</div>
+        // The Main Task Row
+        <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            {isRunning && (
+              <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+            )}
+            {/* Left Side */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => onToggle(id)}
+                className="text-gray-300 hover:text-emerald-500 transition-colors"
+              >
+                {completed ? (
+                  <CheckCircle2 className="text-emerald-500" size={24} />
+                ) : (
+                  <Circle size={24} strokeWidth={2.5} />
+                )}
+              </button>
+              <div>
+                <h3 className="text-gray-900 font-bold">{title}</h3>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mt-1 font-medium">
+                  <Clock className="w-4 h-4" />
+                  <span>10:00 AM - 12:00 PM</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side */}
+            <div className="flex items-center gap-5">
+              <div
+                onClick={() => toggleTimer(id)}
+                className="flex items-center gap-2 bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-200 font-mono font-bold text-sm cursor-pointer"
+              >
+                <button className="cursor-pointer">
+                  {isRunning ? (
+                    <Pause size={12} fill="currentColor" />
+                  ) : (
+                    <Play size={14} fill="currentColor" />
+                  )}
+                  {formatTime(timeSpent)}
+                </button>
+              </div>
+
+              <span
+                className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${catColors}`}
+              >
+                {category}
+              </span>
+
+              <div>
+                <button
+                  onClick={() => setIsExpanded(false)}
+                  className="text-gray-400 hover:text-gray-900 p-1"
+                >
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Subtasks ටික පෙන්වන Function එක Call කරනවා */}
+          {renderSubTasks()}
+        </div>
+      ) : isSubTask ? (
+        subTaskCollapsed
       ) : (
         // The Main Card Container - Collapsed Task Card
         <div className="group bg-white p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between cursor-pointer">
@@ -95,7 +316,7 @@ const TaskCard = ({
               )}
             </button>
             <span
-              className={`${catColors.bg} ${catColors.text} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
+              className={`${catColors} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
             >
               {category}
             </span>

@@ -107,7 +107,7 @@ const MainLayout = ({ children }) => {
         </div>
       </aside>
 
-      <main className="overflow-hidden flex-1">{children}</main>
+      <main className="overflow-y-auto flex-1 bg-gray-50 p-8">{children}</main>
     </div>
   );
 };

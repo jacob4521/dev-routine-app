@@ -70,35 +70,7 @@ const TaskPractice = () => {
           </div>
         </div>
 
-        {/* The Main Card Container - Collapsed Task Card */}
-        <div className="group bg-white p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between cursor-pointer">
-          {/* Left Side */}
-          <div className="flex items-center gap-4">
-            <Circle className="w-5 h-5 text-gray-300" />
-            <div>
-              <div className="text-gray-900 font-bold text-base group-hover:text-orange-500 transition-colors">
-                Weekly team sync meeting
-              </div>
-              <div className="flex items-center gap-2 text-gray-500 mt-1 font-medium">
-                <Clock className="w-4 h-4" />
-                <span>02:00 PM - 03:00 PM</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-5">
-            <button className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all">
-              <Play className="w-4 h-4 text-orange-500" fill="currentColor" />
-            </button>
-            <span className="bg-orange-50 text-orange-500 uppercase tracking-wider text-xs rounded-md px-3 py-1">
-              Work
-            </span>
-            <span className="text-gray-400 group-hover:text-gray-900 transition-colors">
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );

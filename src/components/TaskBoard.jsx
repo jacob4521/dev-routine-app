@@ -1,5 +1,5 @@
 import { Search, Plus, CheckCircle2, Clock, Circle } from "lucide-react";
-import TaskCard from "@/components/TaskCard";
+import TaskCard from "./TaskCard";
 
 const TaskBoard = ({
   newTaskTitle,
@@ -10,6 +10,12 @@ const TaskBoard = ({
   runningTaskId,
   inProgressTasks = runningTaskId ? 1 : 0,
   tasks,
+  deleteTask,
+  updateTask,
+  toggleTaskDone,
+  categoryColors,
+  handleAddSubTask,
+  toggleTimer,
 }) => {
   const mainTasks = tasks.filter((task) => task.parentId === null);
   const totalTasks = mainTasks.length;
@@ -114,6 +120,39 @@ const TaskBoard = ({
         <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
           Personal
         </button>
+      </div>
+
+      {/* Task List Section */}
+      <div className="flex flex-col gap-4">
+        {mainTasks.length === 0 ? (
+          <div className="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 mt-4">
+            <p className="text-4xl mb-2">☕</p>
+            <h3 className="text-lg font-semibold text-gray-600">All done!</h3>
+            <p className="text-gray-600">You have no tasks for today!</p>
+          </div>
+        ) : (
+          mainTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              category={task.category}
+              completed={task.completed}
+              onToggle={toggleTaskDone}
+              onDelete={deleteTask}
+              onUpdate={updateTask}
+              categoryColors={
+                categoryColors ? categoryColors[task.category] : undefined
+              }
+              handleAddSubTask={handleAddSubTask}
+              allTasks={tasks}
+              runningTaskId={runningTaskId}
+              toggleTimer={toggleTimer}
+              parentId={task.parentId}
+              timeSpent={task.timeSpent}
+            />
+          ))
+        )}
       </div>
     </div>
   );

@@ -204,7 +204,13 @@ const TaskCard = ({
     <div className="flex flex-col gap-3 w-full">
       {isExpanded ? (
         // The Main Task Row
-        <div className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden">
+        <div
+          className={
+            isSubTask
+              ? "bg-gray-50/50 border border-gray-200 rounded-xl p-3 flex flex-col relative"
+              : "bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden"
+          }
+        >
           <div className="flex items-center justify-between">
             {isRunning && (
               <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
@@ -246,11 +252,13 @@ const TaskCard = ({
                 </button>
               </div>
 
-              <span
-                className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${catColors}`}
-              >
-                {category}
-              </span>
+              {!isSubTask && (
+                <span
+                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${catColors}`}
+                >
+                  {category}
+                </span>
+              )}
 
               <div>
                 <button

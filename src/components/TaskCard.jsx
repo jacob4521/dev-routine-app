@@ -11,6 +11,7 @@ import {
   Check,
   CheckCircle2,
   Square,
+  Trash2,
 } from "lucide-react";
 
 const TaskCard = ({
@@ -77,6 +78,17 @@ const TaskCard = ({
         </div>
 
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {!completed && (
+            <button
+              className="text-gray-400 hover:text-red-500 p-1 rounded-md hover:bg-red-200 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -201,7 +213,7 @@ const TaskCard = ({
   return (
     <div className="flex flex-col gap-3 w-full">
       {isExpanded ? (
-        // The Main Task Row
+        // The Main Task Row - Expanded View
         <div
           className={
             isSubTask
@@ -226,7 +238,12 @@ const TaskCard = ({
                 )}
               </button>
               <div>
-                <h3 className="text-gray-900 font-bold">{title}</h3>
+                <h3
+                  className="text-gray-900 font-bold cursor-pointer"
+                  onClick={() => setIsExpanded(false)}
+                >
+                  {title}
+                </h3>
                 <div className="flex items-center gap-2 text-sm text-gray-500 mt-1 font-medium">
                   <Clock className="w-4 h-4" />
                   <span>10:00 AM - 12:00 PM</span>
@@ -249,6 +266,18 @@ const TaskCard = ({
                   {formatTime(timeSpent)}
                 </button>
               </div>
+
+              {!completed && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(id);
+                  }}
+                  className="text-gray-400 hover:text-red-500 p-1 rounded-md hover:bg-red-50 transition-colors"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
 
               {!isSubTask && (
                 <span
@@ -276,7 +305,7 @@ const TaskCard = ({
         subTaskCollapsed
       ) : (
         // The Main Card Container - Collapsed Task Card
-        <div className="group bg-white p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between cursor-pointer">
+        <div className="group bg-white p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between">
           {/* Left Side */}
           <div className="flex items-center gap-4">
             <button
@@ -295,7 +324,7 @@ const TaskCard = ({
             <div>
               <div
                 onClick={() => setIsExpanded(true)}
-                className={`font-bold text-base transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-900 group-hover:text-orange-500"}`}
+                className={`font-bold text-base transition-colors cursor-pointer ${completed ? "text-gray-400 line-through" : "text-gray-900 group-hover:text-orange-500"}`}
               >
                 {title}
               </div>
@@ -312,6 +341,7 @@ const TaskCard = ({
               onClick={(e) => {
                 e.stopPropagation();
                 toggleTimer(id);
+                setIsExpanded(true);
               }}
               className={`flex items-center justify-center w-8 h-8 rounded-full border transition-all ${isRunning ? "bg-orange-100 border-orange-300 text-orange-600" : "bg-gray-50 border-gray-200 text-gray-400 hover:text-orange-500 hover:border-orange-300 hover:bg-orange-50"}  hover:border-orange-300 hover:bg-orange-50`}
             >
@@ -321,6 +351,7 @@ const TaskCard = ({
                 <Play size={14} fill="currentColor" className="ml-0.5" />
               )}
             </button>
+            
             <span
               className={`${catColors} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
             >

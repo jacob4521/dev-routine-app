@@ -37,6 +37,7 @@ const TaskCard = ({
 
   // Derived state
   const isRunning = runningTaskId === id;
+  const hasSubTasks = allTasks.some((task) => task.parentId === id);
 
   const catColors = categoryColors || {
     bg: "bg-gray-100",
@@ -58,7 +59,7 @@ const TaskCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onToggle(id);
+              hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
             }}
             className="text-gray-300 hover:text-emerald-500 transition-colors"
           >
@@ -228,7 +229,10 @@ const TaskCard = ({
             {/* Left Side */}
             <div className="flex items-center gap-4">
               <button
-                onClick={() => onToggle(id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+                }}
                 className="text-gray-300 hover:text-emerald-500 transition-colors"
               >
                 {completed ? (
@@ -311,7 +315,7 @@ const TaskCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onToggle(id);
+                hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
               }}
               className="text-gray-300 hover:text-emerald-500 transition-colors"
             >
@@ -351,7 +355,7 @@ const TaskCard = ({
                 <Play size={14} fill="currentColor" className="ml-0.5" />
               )}
             </button>
-            
+
             <span
               className={`${catColors} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
             >

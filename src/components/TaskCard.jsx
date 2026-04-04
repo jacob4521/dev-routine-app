@@ -37,7 +37,9 @@ const TaskCard = ({
 
   // Derived state
   const isRunning = runningTaskId === id;
-  const hasSubTasks = allTasks.some((task) => task.parentId === id);
+  const hasInCompleteSubTasks = allTasks.some(
+    (task) => task.parentId === id && !task.completed,
+  );
 
   const catColors = categoryColors || {
     bg: "bg-gray-100",
@@ -59,7 +61,7 @@ const TaskCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+              hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
             }}
             className="text-gray-300 hover:text-emerald-500 transition-colors"
           >
@@ -231,7 +233,7 @@ const TaskCard = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+                  hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
                 }}
                 className="text-gray-300 hover:text-emerald-500 transition-colors"
               >
@@ -315,7 +317,7 @@ const TaskCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                hasSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+                hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
               }}
               className="text-gray-300 hover:text-emerald-500 transition-colors"
             >

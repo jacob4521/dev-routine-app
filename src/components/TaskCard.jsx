@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Square,
   Trash2,
+  Pencil,
 } from "lucide-react";
 
 const TaskCard = ({
@@ -34,6 +35,8 @@ const TaskCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAddingSubTask, setIsAddingSubTask] = useState(false);
   const [subTaskTitle, setSubTaskTitle] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
 
   // Derived state
   const isRunning = runningTaskId === id;
@@ -54,6 +57,15 @@ const TaskCard = ({
     return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleSaveEdit = () => {
+    if (editedTitle.trim() !== "" && editedTitle !== title) {
+      onUpdate(id, editedTitle);
+    } else {
+      setEditedTitle(title);
+    }
+    setIsEditing(false);
+  };
+
   const subTaskCollapsed = (
     <div className="flex flex-col gap-2 w-full mt-1">
       <div className="group flex items-center justify-between w-full p-2 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-100">
@@ -72,12 +84,31 @@ const TaskCard = ({
             )}
           </button>
 
-          <div
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
-          >
-            {title}
-          </div>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              onBlur={handleSaveEdit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSaveEdit();
+                if (e.key === "Escape") {
+                  setEditedTitle(title);
+                  setIsEditing(false);
+                }
+              }}
+              className="bg-transparent border-b border-blue-400 outline-none px-1 text-gray-900 w-full"
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <div
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
+            >
+              {title}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -92,6 +123,18 @@ const TaskCard = ({
               <Trash2 size={16} />
             </button>
           )}
+          {!completed && (
+            <button
+              className="text-gray-400 hover:text-blue-500 p-1 rounded-md hover:bg-blue-200 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditing(true);
+              }}
+            >
+              <Pencil size={16} />
+            </button>
+          )}
+
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -246,12 +289,32 @@ const TaskCard = ({
                 )}
               </button>
               <div>
-                <h3
-                  className="text-gray-900 font-bold cursor-pointer"
-                  onClick={() => setIsExpanded(false)}
-                >
-                  {title}
-                </h3>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onBlur={handleSaveEdit}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSaveEdit();
+                      if (e.key === "Escape") {
+                        setEditedTitle(title);
+                        setIsEditing(false);
+                      }
+                    }}
+                    className="bg-transparent border-b border-blue-400 outline-none px-1 text-gray-900 w-full"
+                    autoFocus
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                ) : (
+                  <h3
+                    className="text-gray-900 font-bold cursor-pointer"
+                    onClick={() => setIsExpanded(false)}
+                  >
+                    {title}
+                  </h3>
+                )}
+
                 <div className="flex items-center gap-2 text-sm text-gray-500 mt-1 font-medium">
                   <Clock className="w-4 h-4" />
                   <span>10:00 AM - 12:00 PM</span>
@@ -284,6 +347,18 @@ const TaskCard = ({
                   className="text-gray-400 hover:text-red-500 p-1 rounded-md hover:bg-red-50 transition-colors"
                 >
                   <Trash2 size={18} />
+                </button>
+              )}
+
+              {!completed && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsEditing(true);
+                  }}
+                  className="text-gray-400 hover:text-blue-500 p-1 rounded-md hover:bg-blue-50 transition-colors"
+                >
+                  <Pencil size={16} />
                 </button>
               )}
 

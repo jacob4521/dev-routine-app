@@ -47,27 +47,25 @@ function App() {
     localStorage.setItem("dev-ideas", JSON.stringify(inboxIdeas));
   }, [inboxIdeas]);
 
-    useEffect(() => {
-      let interval;
+  useEffect(() => {
+    let interval;
 
-      if (runningTaskId) {
-        interval = setInterval(() => {
-          setTasks(
-            (prevTasks) =>
-              prevTasks.map((task) =>
-                task.id === runningTaskId
-                  ? { ...task, timeSpent: (task.timeSpent || 0) + 1 }
-                  : task,
-              ),
-            1000,
-          );
-        });
-      } else {
-        clearInterval(interval);
-      }
+    if (runningTaskId) {
+      interval = setInterval(() => {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === runningTaskId
+              ? { ...task, timeSpent: (task.timeSpent || 0) + 1 }
+              : task,
+          ),
+        );
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
 
-      return () => clearInterval(interval);
-    }, [runningTaskId]);
+    return () => clearInterval(interval);
+  }, [runningTaskId]);
 
   const handleAddTask = () => {
     if (newTaskTitle.trim() === "") return;
@@ -199,7 +197,7 @@ function App() {
             💡 Idea Inbox
           </button>
         </div>
-         
+
         {activeTab === "tasks" && (
           <TaskBoard
             newTaskTitle={newTaskTitle}

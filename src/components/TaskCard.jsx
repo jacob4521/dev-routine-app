@@ -44,6 +44,16 @@ const TaskCard = ({
     (task) => task.parentId === id && !task.completed,
   );
 
+  const getDescendantsTime = (parentId) => {
+    return allTasks
+      .filter((task) => task.parentId === parentId)
+      .reduce((total, child) => {
+        return total + (child.timeSpent || 0) + getDescendantsTime(child.id);
+      }, 0);
+  };
+
+  const totalTimeSpent = (timeSpent || 0) + getDescendantsTime(id);
+
   const catColors = categoryColors || {
     bg: "bg-gray-100",
     text: "text-gray-600",
@@ -109,9 +119,32 @@ const TaskCard = ({
               {title}
             </div>
           )}
+          {timeSpent > 0 && (
+            <span className="border-2 border-orange-300 rounded-md p-0.5 px-1 text-[10px] font-mono text-orange-500 font-bold leading-none mt-1">
+              {formatTime(totalTimeSpent)}
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div
+          className={`flex items-center gap-2 transition-opacity ${isRunning ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+        >
+          {!completed && (
+            <button
+              className={`p-1 rounded-md transition-all ${isRunning ? "bg-orange-100 text-orange-600 shadow-md" : "text-gray-400 hover:text-orange-500 hover:bg-orange-200"}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleTimer(id);
+              }}
+            >
+              {isRunning ? (
+                <Pause size={14} fill="currentColor" />
+              ) : (
+                <Play size={14} fill="currentColor" />
+              )}
+            </button>
+          )}
+
           {!completed && (
             <button
               className="text-gray-400 hover:text-red-500 p-1 rounded-md hover:bg-red-200 transition-colors"
@@ -325,7 +358,9 @@ const TaskCard = ({
             {/* Right Side */}
             <div className="flex items-center gap-5">
               <div
-                onClick={() => toggleTimer(id)}
+                onClick={() => {
+                  if (!completed) toggleTimer(id);
+                }}
                 className="flex items-center gap-2 bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-200 font-mono font-bold text-sm cursor-pointer"
               >
                 <button className="cursor-pointer flex items-center gap-2">
@@ -334,7 +369,7 @@ const TaskCard = ({
                   ) : (
                     <Play size={14} fill="currentColor" />
                   )}
-                  {formatTime(timeSpent)}
+                  {formatTime(totalTimeSpent)}
                 </button>
               </div>
 

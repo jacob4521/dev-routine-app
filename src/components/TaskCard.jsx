@@ -34,6 +34,8 @@ const TaskCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isAddingSubTask, setIsAddingSubTask] = useState(false);
   const [subTaskTitle, setSubTaskTitle] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
 
   // Derived state
   const isRunning = runningTaskId === id;
@@ -54,6 +56,15 @@ const TaskCard = ({
     return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleSaveEdit = () => {
+    if (editTitle.trim() !== "" && editTitle !== title) {
+      onUpdate(id, editTitle);
+    } else {
+      setEditTitle(title);
+    }
+    setIsEditing(false);
+  };
+
   const subTaskCollapsed = (
     <div className="flex flex-col gap-2 w-full mt-1">
       <div className="group flex items-center justify-between w-full p-2 hover:bg-gray-50 rounded-lg transition-colors border border-transparent hover:border-gray-100">
@@ -72,12 +83,35 @@ const TaskCard = ({
             )}
           </button>
 
-          <div
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
-          >
-            {title}
-          </div>
+          {isEditing ? (
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onBlur={handleSaveEdit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSaveEdit();
+                if (e.key === "Escape") {
+                  setEditTitle(title);
+                  setIsEditing(false);
+                }
+              }}
+              className="w-full bg-transparent border-b-2 border-blue-400 outline-none px-1 text-gray-900 font-medium"
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <div
+              onClick={() => setIsExpanded(!isExpanded)}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                if (!completed) setIsEditing(true);
+              }}
+              className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
+            >
+              {title}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -233,7 +267,9 @@ const TaskCard = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+                  hasInCompleteSubTasks
+                    ? setIsExpanded(!isExpanded)
+                    : onToggle(id);
                 }}
                 className="text-gray-300 hover:text-emerald-500 transition-colors"
               >
@@ -317,7 +353,9 @@ const TaskCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+                hasInCompleteSubTasks
+                  ? setIsExpanded(!isExpanded)
+                  : onToggle(id);
               }}
               className="text-gray-300 hover:text-emerald-500 transition-colors"
             >

@@ -170,6 +170,33 @@ function App() {
     }
   };
 
+  const handleAddLink = (taskId, linkUrl) => {
+    if (linkUrl.trim() === "") return;
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId
+          ? { ...task, links: [...(task.links || []), linkUrl] }
+          : task,
+      ),
+    );
+  };
+
+  const handleRemoveLink = (taskId, linkIndexToRemove) => {
+    setTasks((prevTask) =>
+      prevTask.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              links: (task.links || []).filter(
+                (_, index) => index !== linkIndexToRemove,
+              ),
+            }
+          : task,
+      ),
+    );
+  };
+
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "dashboard" && (
@@ -213,6 +240,8 @@ function App() {
             handleAddSubTask={handleAddSubTask}
             runningTaskId={runningTaskId}
             toggleTimer={toggleTimer}
+            handleAddLink={handleAddLink}
+            handleRemoveLink={handleRemoveLink}
           />
         )}
         {/* {activeTab === "tasks" && <TaskPractice />} */}

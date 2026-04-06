@@ -13,6 +13,9 @@ import {
   Square,
   Trash2,
   Pencil,
+  Link as LinkIcon,
+  ExternalLink,
+  X,
 } from "lucide-react";
 
 const TaskCard = ({
@@ -30,6 +33,9 @@ const TaskCard = ({
   toggleTimer,
   timeSpent,
   isSubTask = false,
+  handleAddLink,
+  links = [],
+  handleRemoveLink,
 }) => {
   // Local state for managing subtasks and expansion
   const [isExpanded, setIsExpanded] = useState(false);
@@ -37,6 +43,8 @@ const TaskCard = ({
   const [subTaskTitle, setSubTaskTitle] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
+  const [newLink, setNewLink] = useState("");
+  const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 
   // Derived state
   const isRunning = runningTaskId === id;
@@ -74,6 +82,13 @@ const TaskCard = ({
       setEditedTitle(title);
     }
     setIsEditing(false);
+  };
+
+  const onAddNewLink = () => {
+    if (newLink.trim() !== "") {
+      handleAddLink(id, newLink);
+      setNewLink("");
+    }
   };
 
   const subTaskCollapsed = (
@@ -349,7 +364,16 @@ const TaskCard = ({
                 )}
 
                 <div className="flex items-center gap-2 text-sm text-gray-500 mt-1 font-medium">
-                  <Clock className="w-4 h-4" />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsLinkModalOpen(true);
+                    }}
+                    className="flex items-center cursor-pointer gap-1 px-2 py-px bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors"
+                  >
+                    <LinkIcon className="w-3 h-3" />
+                    <span>{links.length}</span>
+                  </button>
                   <span>10:00 AM - 12:00 PM</span>
                 </div>
               </div>
@@ -483,6 +507,90 @@ const TaskCard = ({
                 onClick={() => setIsExpanded(true)}
               />
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* Link Modal */}
+      {isLinkModalOpen && (
+        // Backdrop blur and dark overlay
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          {/* Modal Content */}
+          <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-xl">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-5 border-b pb-3">
+              <h3 className="text-lg font-bold text-gray-900">Resources</h3>
+              <button className="cursor-pointer">
+                <X
+                  className="w-5 h-5"
+                  onClick={() => setIsLinkModalOpen(false)}
+                />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex flex-col gap-3 mb-6 max-h-60 overflow-y-auto pr-2">
+              {links.length === 0 ? (
+                <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                  <p className="text-sm text-gray-500">No links added yet.</p>
+                </div>
+              ) : (
+                links.map((link, index) => {
+                  if (typeof link !== "string") return null;
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 group/item"
+                    >
+                      <a
+                        key={index}
+                        href={
+                          link.startsWith("http") ? link : `https://${link}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-blue-50 hover:border-blue-200 rounded-xl text-sm text-gray-700 hover:text-blue-700 transition-all border border-gray-100 group"
+                      >
+                        <div className="bg-white p-1.5 rounded-lg shadow-sm group-hover:text-blue-600 text-gray-400">
+                          <LinkIcon className="w-4 h-4 shrink-0" />
+                        </div>
+                        <span className="truncate">{link}</span>
+                      </a>
+                      <button
+                        onClick={() => handleRemoveLink(id, index)}
+                        className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors border border-transparent hover:border-red-100"
+                        title="Remove Link"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Add link input */}
+            <div className="flex gap-2 mt-4">
+              <input
+                type="text"
+                placeholder="Paste your URL here..."
+                value={newLink}
+                onChange={(e) => setNewLink(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") onAddNewLink();
+                }}
+                className="flex-1 px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+              />
+              <button
+                onClick={onAddNewLink}
+                disabled={newLink.trim() === ""}
+                className="px-5 py-2.5 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add
+              </button>
+            </div>
           </div>
         </div>
       )}

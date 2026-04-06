@@ -16,6 +16,8 @@ const TaskBoard = ({
   categoryColors,
   handleAddSubTask,
   toggleTimer,
+  handleAddLink,
+  handleRemoveLink
 }) => {
   const mainTasks = tasks.filter((task) => task.parentId === null);
   const totalTasks = mainTasks.length;
@@ -81,7 +83,7 @@ const TaskBoard = ({
             <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">
               In Progress
             </p>
-            <h2 className="text-3xl font-bold text-gray-900">0</h2>
+            <h2 className="text-3xl font-bold text-gray-900">{inProgressTasks}</h2>
           </div>
 
           <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-xl">
@@ -150,6 +152,9 @@ const TaskBoard = ({
               toggleTimer={toggleTimer}
               parentId={task.parentId}
               timeSpent={task.timeSpent}
+              handleAddLink={handleAddLink}
+              links={task.links}
+              handleRemoveLink={handleRemoveLink}
             />
           ))
         )}

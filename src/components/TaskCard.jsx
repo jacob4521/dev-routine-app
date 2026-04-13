@@ -85,6 +85,7 @@ const TaskCard = ({
   };
 
   const onAddNewLink = () => {
+    if (!handleAddLink) return;
     if (newLink.trim() !== "") {
       handleAddLink(id, newLink);
       setNewLink("");
@@ -216,6 +217,9 @@ const TaskCard = ({
                 runningTaskId={runningTaskId}
                 toggleTimer={toggleTimer}
                 isSubTask={true}
+                handleAddLink={handleAddLink}
+                links={nestedSubTask.links}
+                handleRemoveLink={handleRemoveLink}
               />
             ))}
 
@@ -272,6 +276,9 @@ const TaskCard = ({
               runningTaskId={runningTaskId}
               toggleTimer={toggleTimer}
               isSubTask={true}
+              handleAddLink={handleAddLink}
+              links={subTask.links}
+              handleRemoveLink={handleRemoveLink}
             />
           ))}
 

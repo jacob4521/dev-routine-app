@@ -197,6 +197,32 @@ function App() {
     );
   };
 
+  const downloadTasksBackup = () => {
+    const savedTasks = localStorage.getItem("dev-tasks");
+
+    const jasonString = JSON.stringify(savedTasks, null, 2);
+
+    const blob = new Blob([jasonString], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "my-tasks.json";
+
+    document.body.appendChild(link);
+    link.click();
+
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // const downloadTasksBackup = () => {
+  //   const savedTasks = localStorage.getItem("dev-tasks");
+
+  // };
+
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "dashboard" && (
@@ -242,6 +268,7 @@ function App() {
             toggleTimer={toggleTimer}
             handleAddLink={handleAddLink}
             handleRemoveLink={handleRemoveLink}
+            downloadTasksBackup={downloadTasksBackup}
           />
         )}
         {/* {activeTab === "tasks" && <TaskPractice />} */}

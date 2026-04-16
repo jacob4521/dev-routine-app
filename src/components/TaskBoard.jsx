@@ -1,4 +1,11 @@
-import { Search, Plus, CheckCircle2, Clock, Circle } from "lucide-react";
+import {
+  Search,
+  Plus,
+  CheckCircle2,
+  Clock,
+  Circle,
+  Download,
+} from "lucide-react";
 import TaskCard from "./TaskCard";
 
 const TaskBoard = ({
@@ -17,7 +24,8 @@ const TaskBoard = ({
   handleAddSubTask,
   toggleTimer,
   handleAddLink,
-  handleRemoveLink
+  handleRemoveLink,
+  downloadTasksBackup,
 }) => {
   const mainTasks = tasks.filter((task) => task.parentId === null);
   const totalTasks = mainTasks.length;
@@ -83,7 +91,9 @@ const TaskBoard = ({
             <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">
               In Progress
             </p>
-            <h2 className="text-3xl font-bold text-gray-900">{inProgressTasks}</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              {inProgressTasks}
+            </h2>
           </div>
 
           <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-xl">
@@ -109,19 +119,30 @@ const TaskBoard = ({
       </div>
 
       {/* Category Filters */}
-      <div className="w-full flex gap-2 items-center border-b border-gray-200 pb-4">
-        <button className="bg-gray-900 px-5 py-2 shadow-sm rounded-lg text-white font-bold text-sm">
-          All Tasks
-        </button>
-        <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
-          Important
-        </button>
-        <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
-          Work
-        </button>
-        <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
-          Personal
-        </button>
+      <div className="flex justify-between w-full gap-2 items-center border-b border-gray-200 pb-4">
+        <div>
+          <button className="bg-gray-900 px-5 py-2 shadow-sm rounded-lg text-white font-bold text-sm">
+            All Tasks
+          </button>
+          <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
+            Important
+          </button>
+          <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
+            Work
+          </button>
+          <button className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 px-5 py-2 rounded-lg text-sm font-bold transition-colors">
+            Personal
+          </button>
+        </div>
+
+        <div>
+          <button
+            onClick={downloadTasksBackup}
+            className="text-gray-700 p-2 shadow-sm rounded-lg font-bold text-sm hover:bg-gray-300 transition-colors duration-300"
+          >
+            <Download className="w-4 h-4" strokeWidth={3} />
+          </button>
+        </div>
       </div>
 
       {/* Task List Section */}

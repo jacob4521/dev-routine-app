@@ -49,16 +49,23 @@ function App() {
 
   useEffect(() => {
     let interval;
+    let lastTick = Date.now();
 
     if (runningTaskId) {
       interval = setInterval(() => {
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.id === runningTaskId
-              ? { ...task, timeSpent: (task.timeSpent || 0) + 1 }
-              : task,
-          ),
-        );
+        const now = Date.now();
+        const delta = Math.floor((now - lastTick) / 1000);
+        
+        if (delta > 0) {
+          setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+              task.id === runningTaskId
+                ? { ...task, timeSpent: (task.timeSpent || 0) + delta }
+                : task,
+            ),
+          );
+          lastTick += delta * 1000;
+        }
       }, 1000);
     } else {
       clearInterval(interval);

@@ -6,13 +6,26 @@ const PomodoroTimer = () => {
 
   useEffect(() => {
     let interval;
+    let lastTick = Date.now();
+
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        const now = Date.now();
+        const delta = Math.floor((now - lastTick) / 1000);
+
+        if (delta > 0) {
+          setTimeLeft((prev) => {
+            const nextTime = prev - delta;
+            return nextTime > 0 ? nextTime : 0;
+          });
+          lastTick += delta * 1000;
+        }
       }, 1000);
-    } else if (timeLeft === 0) {
-      setIsRunning(false);
-      alert("Pomodoro session is over! Take a break. ☕");
+    } else if (timeLeft === 0 && isRunning) {
+      setTimeout(() => {
+        setIsRunning(false);
+        alert("Pomodoro session is over! Take a break. ☕");
+      }, 0);
     }
 
     return () => clearInterval(interval); 

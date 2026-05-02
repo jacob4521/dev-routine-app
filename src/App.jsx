@@ -23,13 +23,9 @@ function App() {
   });
 
   const [newIdeaTitle, setNewIdeaTitle] = useState("");
-
   const [newTaskTitle, setNewTaskTitle] = useState("");
-
   const [activeTab, setActiveTab] = useState("dashboard");
-
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
-
   const [planningIdeaId, setPlanningIdeaId] = useState(null);
 
   const categoryColors = {
@@ -55,7 +51,7 @@ function App() {
       interval = setInterval(() => {
         const now = Date.now();
         const delta = Math.floor((now - lastTick) / 1000);
-        
+
         if (delta > 0) {
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
@@ -83,6 +79,7 @@ function App() {
       category: newTaskCategory,
       completed: false,
       parentId: null,
+      priority: "Low",
     };
 
     setTasks([newTask, ...tasks]);
@@ -220,15 +217,27 @@ function App() {
     document.body.appendChild(link);
     link.click();
 
-
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  // const downloadTasksBackup = () => {
-  //   const savedTasks = localStorage.getItem("dev-tasks");
+  // create a funciton to sort the tasks based on their priority
+  // const sortTaskPriorities = (tasks) => {
 
-  // };
+  //   tasks.map((task) => {
+  //     if (task.priority) {
+
+  //     }
+  //   })
+  // }
+
+  const addPriority = (tasks) => {
+    tasks.map((task) => {
+      task.priority = "Low";
+    });
+  };
+
+  addPriority(tasks);
 
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>

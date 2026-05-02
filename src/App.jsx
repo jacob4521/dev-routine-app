@@ -231,13 +231,7 @@ function App() {
   //   })
   // }
 
-  const addPriority = (tasks) => {
-    tasks.map((task) => {
-      task.priority = "Low";
-    });
-  };
 
-  addPriority(tasks);
 
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>

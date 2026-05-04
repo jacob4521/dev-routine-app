@@ -286,17 +286,7 @@ function App() {
     setTasks(updatedTasks);
   };
 
-  // Function to add the priority field to the task object if it is not exist when the app is loaded first time after adding the priority feature
-  useEffect(() => {
-    const updatedTasks = tasks.map((task) => {
-      if (!task.priority) {
-        return { ...task, priority: "Low" };
-      }
-      return task;
-    });
 
-    setTasks(updatedTasks);
-  }, []);
 
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>

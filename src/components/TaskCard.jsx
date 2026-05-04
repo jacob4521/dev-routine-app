@@ -36,6 +36,7 @@ const TaskCard = ({
   handleAddLink,
   links = [],
   handleRemoveLink,
+  priority,
 }) => {
   // Local state for managing subtasks and expansion
   const [isExpanded, setIsExpanded] = useState(false);
@@ -91,6 +92,14 @@ const TaskCard = ({
       setNewLink("");
     }
   };
+
+  const priorityColors = {
+    "High": "text-red-500",
+    "Medium": "text-yellow-500",
+    "Low": "text-gray-500",
+  };
+
+  
 
   const subTaskCollapsed = (
     <div className="flex flex-col gap-2 w-full mt-1">
@@ -340,7 +349,7 @@ const TaskCard = ({
                 {completed ? (
                   <CheckCircle2 className="text-emerald-500" size={24} />
                 ) : (
-                  <Circle size={24} strokeWidth={2.5} />
+                  <Circle className={priorityColors[priority] || "text-gray-300 hover:text-gray-500"} size={24} strokeWidth={2.5} />
                 )}
               </button>
               <div>
@@ -467,9 +476,13 @@ const TaskCard = ({
               className="text-gray-300 hover:text-emerald-500 transition-colors"
             >
               {completed ? (
-                <CheckCircle2 className="text-emerald-500" size={24} />
+                <CheckCircle2 className={`${priorityColors[priority]} || text-emerald-500`} size={24} />
               ) : (
-                <Circle size={24} strokeWidth={2.5} />
+                <Circle
+                  className={priorityColors[priority] || "text-gray-300 hover:text-gray-500"}
+                  size={24}
+                  strokeWidth={2.5}
+                />
               )}
             </button>
             <div>

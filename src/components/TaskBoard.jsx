@@ -161,6 +161,7 @@ const TaskBoard = ({
               title={task.title}
               category={task.category}
               completed={task.completed}
+              priority={task.priority}
               onToggle={toggleTaskDone}
               onDelete={deleteTask}
               onUpdate={updateTask}

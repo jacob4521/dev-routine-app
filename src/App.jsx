@@ -222,16 +222,30 @@ function App() {
   };
 
   // create a funciton to sort the tasks based on their priority
-  // const sortTaskPriorities = (tasks) => {
+  const sortTaskPriorities = (tasksArray) => {
+    const prioritWeights = {
+      High: 3,
+      Medium: 2,
+      Low: 1,
+    };
 
-  //   tasks.map((task) => {
-  //     if (task.priority) {
+    // creating a new sorted array
+    const sortedArray = [...tasksArray].sort((a, b) => {
+      // Creating the weights for the priorities of the tasks
+      const weightA = prioritWeights[a.priority];
+      const weightB = prioritWeights[b.priority];
 
-  //     }
-  //   })
-  // }
-
-
+      // Sorting the tasks based on the weights of their priorities\
+      if (weightA !== weightB) {
+        // If the weight of a and b is not equal sort them based on the weights
+        return weightB - weightA;
+      } else {
+        // If weights are equal sort thme based on their created time using ID
+        return a.id - b.id;
+      }
+    });
+    return sortedArray;
+  };
 
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
@@ -268,7 +282,7 @@ function App() {
             newTaskCategory={newTaskCategory}
             setNewTaskCategory={setNewTaskCategory}
             handleAddTask={handleAddTask}
-            tasks={tasks}
+            tasks={sortTaskPriorities(tasks)}
             deleteTask={deleteTask}
             updateTask={updateTask}
             toggleTaskDone={toggleTaskDone}
@@ -289,7 +303,7 @@ function App() {
             setNewIdeaTitle={setNewIdeaTitle}
             handleAddIdea={handleAddIdea}
             inboxIdeas={inboxIdeas}
-            handlePlanIdea={handlePlanIdea}
+            handlePlanIdea={handlePlanIdea}   
             deleteIdea={deleteIdea}
           />
         )}

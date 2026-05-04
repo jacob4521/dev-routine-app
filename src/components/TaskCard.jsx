@@ -37,6 +37,7 @@ const TaskCard = ({
   links = [],
   handleRemoveLink,
   priority,
+  handlePriorityChange,
 }) => {
   // Local state for managing subtasks and expansion
   const [isExpanded, setIsExpanded] = useState(false);
@@ -63,10 +64,11 @@ const TaskCard = ({
 
   const totalTimeSpent = (timeSpent || 0) + getDescendantsTime(id);
 
-  const catColors = categoryColors || {
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-  };
+  const priorityButtonColors = {
+    High: "bg-red-300 hover:bg-red-500",
+    Medium: "bg-blue-300 hover:bg-blue-500",
+    Low: "bg-gray-300 hover:bg-gray-500",
+  }
 
   const formatTime = (totalSeconds) => {
     if (!totalSeconds) return "00:00:00";
@@ -94,12 +96,10 @@ const TaskCard = ({
   };
 
   const priorityColors = {
-    "High": "text-red-500",
-    "Medium": "text-yellow-500",
-    "Low": "text-gray-500",
+    High: "text-red-300 hover:text-red-500",
+    Medium: "text-blue-300 hover:text-blue-500",
+    Low: "text-gray-300 hover:text-gray-500",
   };
-
-  
 
   const subTaskCollapsed = (
     <div className="flex flex-col gap-2 w-full mt-1">
@@ -349,7 +349,14 @@ const TaskCard = ({
                 {completed ? (
                   <CheckCircle2 className="text-emerald-500" size={24} />
                 ) : (
-                  <Circle className={priorityColors[priority] || "text-gray-300 hover:text-gray-500"} size={24} strokeWidth={2.5} />
+                  <Circle
+                    className={
+                      priorityColors[priority] ||
+                      "text-gray-300 hover:text-gray-500"
+                    }
+                    size={24}
+                    strokeWidth={2.5}
+                  />
                 )}
               </button>
               <div>
@@ -476,10 +483,16 @@ const TaskCard = ({
               className="text-gray-300 hover:text-emerald-500 transition-colors"
             >
               {completed ? (
-                <CheckCircle2 className={`${priorityColors[priority]} || text-emerald-500`} size={24} />
+                <CheckCircle2
+                  className={`${priorityColors[priority]} || text-emerald-500`}
+                  size={24}
+                />
               ) : (
                 <Circle
-                  className={priorityColors[priority] || "text-gray-300 hover:text-gray-500"}
+                  className={
+                    priorityColors[priority] ||
+                    "text-gray-300 hover:text-gray-500"
+                  }
                   size={24}
                   strokeWidth={2.5}
                 />
@@ -516,11 +529,12 @@ const TaskCard = ({
               )}
             </button>
 
-            <span
-              className={`${catColors} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
+            <button
+              className={`${priorityButtonColors[priority]} uppercase tracking-wider text-xs rounded-md px-3 py-1`}
+              onClick={() => handlePriorityChange(id)}
             >
-              {category}
-            </span>
+              {priority || "No Priority"}
+            </button>
             <span className="text-gray-400 group-hover:text-gray-900 transition-colors">
               <ChevronRight
                 className="w-5 h-5 text-gray-400"

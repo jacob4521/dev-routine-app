@@ -26,6 +26,7 @@ const TaskBoard = ({
   handleAddLink,
   handleRemoveLink,
   downloadTasksBackup,
+  handlePriorityChange,
 }) => {
   const mainTasks = tasks.filter((task) => task.parentId === null);
   const totalTasks = mainTasks.length;
@@ -174,6 +175,7 @@ const TaskBoard = ({
               toggleTimer={toggleTimer}
               parentId={task.parentId}
               timeSpent={task.timeSpent}
+              handlePriorityChange={handlePriorityChange}
               handleAddLink={handleAddLink}
               links={task.links}
               handleRemoveLink={handleRemoveLink}

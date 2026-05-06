@@ -11,8 +11,6 @@ import TaskCard from "./TaskCard";
 const TaskBoard = ({
   newTaskTitle,
   setNewTaskTitle,
-  newTaskCategory,
-  setNewTaskCategory,
   handleAddTask,
   runningTaskId,
   inProgressTasks = runningTaskId ? 1 : 0,

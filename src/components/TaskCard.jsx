@@ -446,9 +446,10 @@ const TaskCard = ({
 
               {!isSubTask && (
                 <span
-                  className={`px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider ${catColors}`}
+                  className={`px-3 py-1 rounded-md text-xs uppercase tracking-wider ${priorityButtonColors[priority] || "text-gray-300 hover:text-gray-500"}`}
+                  onClick={() => handlePriorityChange(id)}
                 >
-                  {category}
+                  {priority || "No Priority"}
                 </span>
               )}
 

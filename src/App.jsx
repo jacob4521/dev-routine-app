@@ -247,22 +247,6 @@ function App() {
     return sortedArray;
   };
 
-  // Function to change the priority of a task
-  const changeTaskPriority = (taskID, newPriority) => {
-    // map through the tasks
-    const updatedTasks = tasks.map((task) => {
-      // Compare the taskID and find the task
-      if (task.id === taskID) {
-        // Create a new object and return it
-        return { ...task, priority: newPriority };
-      }
-      return task;
-    });
-
-    // Set the tasks state
-    setTasks(updatedTasks);
-  };
-
   // Function to handle priority change of task
   const handlePriorityChange = (taskID) => {
     // Mapping a priority cycle

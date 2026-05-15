@@ -12,7 +12,12 @@ import BrainDumpTimeline from "./components/BrainDumpTimeline";
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);
   const [isBrainDumpModalOpen, setIsBrainDumpModalOpen] = useState(false);
-  const [brainDumps, setBrainDumps] = useState([]);
+  
+  const [brainDumps, setBrainDumps] = useState(() => {
+    const savedDumps = localStorage.getItem("dev-braindumps");
+    return savedDumps ? JSON.parse(savedDumps) : [];
+  });
+
   const [pendingTaskId, setPendingTaskId] = useState(null);
 
   const [tasks, setTasks] = useState(() => {
@@ -47,6 +52,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("dev-ideas", JSON.stringify(inboxIdeas));
   }, [inboxIdeas]);
+
+  useEffect(() => {
+    localStorage.setItem("dev-braindumps", JSON.stringify(brainDumps));
+  }, [brainDumps]);
 
   useEffect(() => {
     let interval;

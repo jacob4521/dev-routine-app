@@ -6,9 +6,14 @@ import TaskBoard from "./components/TaskBoard";
 import PomodoroTimer from "./components/PomodoroTimer";
 import SidebarPreview from "./components/SidebarPreview";
 import TaskPractice from "./components/TaskPractice";
+import BrainDumpModal from "./components/BrainDumpModal";
+import BrainDumpTimeline from "./components/BrainDumpTimeline";
 
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);
+  const [isBrainDumpModalOpen, setIsBrainDumpModalOpen] = useState(false);
+  const [brainDumps, setBrainDumps] = useState([]);
+  const [pendingTaskId, setPendingTaskId] = useState(null);
 
   const [tasks, setTasks] = useState(() => {
     const savedTasks = localStorage.getItem("dev-tasks");
@@ -170,8 +175,24 @@ function App() {
     if (runningTaskId === taskId) {
       setRunningTaskId(null);
     } else {
-      setRunningTaskId(taskId);
+      setPendingTaskId(taskId);
+      setIsBrainDumpModalOpen(true);
     }
+  };
+
+  const handleStartFocusSession = (title, description) => {
+    const newBrainDump = {
+      id: Date.now(),
+      taskId: pendingTaskId,
+      time: new Date().toLocaleTimeString(),
+      title,
+      description,
+    };
+    
+    setBrainDumps((prev) => [...prev, newBrainDump]);
+    setIsBrainDumpModalOpen(false);
+    setRunningTaskId(pendingTaskId);
+    setPendingTaskId(null);
   };
 
   const handleAddLink = (taskId, linkUrl) => {
@@ -298,6 +319,13 @@ function App() {
           >
             💡 Idea Inbox
           </button>
+
+          <button
+            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "brain-dumps" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
+            onClick={() => setActiveTab("brain-dumps")}
+          >
+            🧠 Brain Dumps
+          </button>
         </div>
 
         {activeTab === "tasks" && (
@@ -333,7 +361,20 @@ function App() {
             deleteIdea={deleteIdea}
           />
         )}
+
+        {activeTab === "brain-dumps" && (
+          <BrainDumpTimeline brainDumps={brainDumps} tasks={tasks} />
+        )}
       </div>
+
+      <BrainDumpModal
+        isOpen={isBrainDumpModalOpen}
+        onClose={() => {
+          setIsBrainDumpModalOpen(false);
+          setPendingTaskId(null);
+        }}
+        onSubmit={handleStartFocusSession}
+      />
     </MainLayout>
   );
 }

@@ -8,6 +8,7 @@ import SidebarPreview from "./components/SidebarPreview";
 import TaskPractice from "./components/TaskPractice";
 import BrainDumpModal from "./components/BrainDumpModal";
 import BrainDumpTimeline from "./components/BrainDumpTimeline";
+import DailyWorkTracker from "./components/DailyWorkTracker";
 
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);
@@ -16,6 +17,11 @@ function App() {
   const [brainDumps, setBrainDumps] = useState(() => {
     const savedDumps = localStorage.getItem("dev-braindumps");
     return savedDumps ? JSON.parse(savedDumps) : [];
+  });
+
+  const [dailyLogs, setDailyLogs] = useState(() => {
+    const saved = localStorage.getItem("dev-daily-logs");
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [pendingTaskId, setPendingTaskId] = useState(null);
@@ -56,6 +62,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("dev-braindumps", JSON.stringify(brainDumps));
   }, [brainDumps]);
+
+  useEffect(() => {
+    localStorage.setItem("dev-daily-logs", JSON.stringify(dailyLogs));
+  }, [dailyLogs]);
 
   useEffect(() => {
     let interval;
@@ -153,6 +163,24 @@ function App() {
 
     setInboxIdeas([newIdea, ...inboxIdeas]);
     setNewIdeaTitle("");
+  };
+
+  const handleAddDailyLog = (title, description, timeSpent) => {
+    if (title.trim() === "") return;
+
+    const newLog = {
+      id: Date.now(),
+      date: new Date().toLocaleDateString(),
+      title,
+      description,
+      timeSpent,
+    };
+
+    setDailyLogs((prevLogs) => [newLog, ...prevLogs]);
+  };
+
+  const handleDeleteDailyLog = (id) => {
+    setDailyLogs((prevLogs) => prevLogs.filter((log) => log.id !== id));
   };
 
   const handlePlanIdea = (idea) => {
@@ -335,6 +363,13 @@ function App() {
           >
             🧠 Brain Dumps
           </button>
+
+          <button
+            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "logs" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
+            onClick={() => setActiveTab("logs")}
+          >
+            📝 Daily Log
+          </button>
         </div>
 
         {activeTab === "tasks" && (
@@ -373,6 +408,14 @@ function App() {
 
         {activeTab === "brain-dumps" && (
           <BrainDumpTimeline brainDumps={brainDumps} tasks={tasks} />
+        )}
+
+        {activeTab === "logs" && (
+          <DailyWorkTracker
+            dailyLogs={dailyLogs}
+            onAddLog={handleAddDailyLog}
+            onDeleteLog={handleDeleteDailyLog}
+          />
         )}
       </div>
 

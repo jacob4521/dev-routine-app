@@ -213,6 +213,7 @@ function App() {
         image: data.image || "",
         createdAt: new Date().toISOString(),
         isCompleted: false,
+        isPinned: false,
       };
 
       setResources((prevResources) => [newResource, ...prevResources]);
@@ -224,6 +225,8 @@ function App() {
         description: "Preview unavailable.",
         image: "",
         createdAt: new Date().toISOString(),
+        isCompleted: false,
+        isPinned: false,
       };
 
       setResources((prevResources) => [fallbackResource, ...prevResources]);
@@ -243,6 +246,16 @@ function App() {
       prevResources.map((resource) =>
         resource.id === id
           ? { ...resource, isCompleted: !resource.isCompleted }
+          : resource,
+      ),
+    );
+  };
+
+  const handleToggleResourcePin = (id) => {
+    setResources((prevResources) =>
+      prevResources.map((resource) =>
+        resource.id === id
+          ? { ...resource, isPinned: !resource.isPinned }
           : resource,
       ),
     );
@@ -496,6 +509,7 @@ function App() {
             onAddResource={handleAddResource}
             onDeleteResource={handleDeleteResource}
             onToggleResource={handleToggleResourceStatus}
+            onTogglePin={handleToggleResourcePin}
             isFetching={isFetchingLink}
           />
         )}

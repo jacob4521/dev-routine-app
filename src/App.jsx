@@ -9,6 +9,7 @@ import TaskPractice from "./components/TaskPractice";
 import BrainDumpModal from "./components/BrainDumpModal";
 import BrainDumpTimeline from "./components/BrainDumpTimeline";
 import DailyWorkTracker from "./components/DailyWorkTracker";
+import ResourceLibrary from "./components/ResourceLibrary";
 
 function App() {
   const [runningTaskId, setRunningTaskId] = useState(null);
@@ -21,6 +22,11 @@ function App() {
 
   const [dailyLogs, setDailyLogs] = useState(() => {
     const saved = localStorage.getItem("dev-daily-logs");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [resources, setResources] = useState(() => {
+    const saved = localStorage.getItem("dev-resources");
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -43,6 +49,7 @@ function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
   const [planningIdeaId, setPlanningIdeaId] = useState(null);
+  const [isFetchingLink, setIsFetchingLink] = useState(false);
 
   const categoryColors = {
     Work: "bg-red-100 text-red-600",
@@ -66,6 +73,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem("dev-daily-logs", JSON.stringify(dailyLogs));
   }, [dailyLogs]);
+
+  useEffect(() => {
+    localStorage.setItem("dev-resources", JSON.stringify(resources));
+  }, [resources]);
 
   useEffect(() => {
     let interval;
@@ -181,6 +192,47 @@ function App() {
 
   const handleDeleteDailyLog = (id) => {
     setDailyLogs((prevLogs) => prevLogs.filter((log) => log.id !== id));
+  };
+
+  const handleAddResource = async (url) => {
+    if (url.trim() === "") return;
+
+    setIsFetchingLink(true);
+
+    try {
+      const response = await fetch(
+        `https://api.linkpreview.net/?key=2b751a712eb446f6f3522a9106540911&q=${encodeURIComponent(url)}`,
+      );
+      const data = await response.json();
+
+      const newResource = {
+        id: Date.now(),
+        url,
+        title: data.title || "Saved Link",
+        description: data.description || "",
+        image: data.image || "",
+      };
+
+      setResources((prevResources) => [newResource, ...prevResources]);
+    } catch {
+      const fallbackResource = {
+        id: Date.now(),
+        url,
+        title: "Saved Link",
+        description: "Preview unavailable.",
+        image: "",
+      };
+
+      setResources((prevResources) => [fallbackResource, ...prevResources]);
+    } finally {
+      setIsFetchingLink(false);
+    }
+  };
+
+  const handleDeleteResource = (id) => {
+    setResources((prevResources) =>
+      prevResources.filter((resource) => resource.id !== id),
+    );
   };
 
   const handlePlanIdea = (idea) => {
@@ -370,6 +422,13 @@ function App() {
           >
             📝 Daily Log
           </button>
+
+          <button
+            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "resources" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
+            onClick={() => setActiveTab("resources")}
+          >
+            📚 Resources
+          </button>
         </div>
 
         {activeTab === "tasks" && (
@@ -415,6 +474,15 @@ function App() {
             dailyLogs={dailyLogs}
             onAddLog={handleAddDailyLog}
             onDeleteLog={handleDeleteDailyLog}
+          />
+        )}
+
+        {activeTab === "resources" && (
+          <ResourceLibrary
+            resources={resources}
+            onAddResource={handleAddResource}
+            onDeleteResource={handleDeleteResource}
+            isFetching={isFetchingLink}
           />
         )}
       </div>

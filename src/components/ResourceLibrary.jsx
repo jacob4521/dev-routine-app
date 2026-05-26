@@ -12,6 +12,30 @@ const ResourceLibrary = ({
 }) => {
   const [url, setUrl] = useState("");
 
+  const sortedResources = [...resources].sort((a, b) => {
+    const timeA = new Date(a.createdAt || a.id).getTime();
+    const timeB = new Date(b.createdAt || b.id).getTime();
+    return timeA - timeB;
+  });
+
+  const formatAddedTime = (createdAt) => {
+    if (!createdAt) return "Added: Unknown";
+
+    const date = new Date(createdAt);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Added: Unknown";
+    }
+
+    return `Added: ${new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(date)}`;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -65,7 +89,7 @@ const ResourceLibrary = ({
       </section>
 
       <section>
-        {resources.length === 0 ? (
+        {sortedResources.length === 0 ? (
           <div className="rounded-3xl border-2 border-dashed border-gray-200 bg-white px-6 py-16 text-center text-gray-500 shadow-sm">
             <p className="text-4xl mb-3">📚</p>
             <p className="font-semibold text-gray-700">No resources saved yet.</p>
@@ -75,7 +99,7 @@ const ResourceLibrary = ({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {resources.map((resource) => {
+            {sortedResources.map((resource) => {
               const title = resource.title || "Saved Link";
               const description = resource.description || "Preview unavailable.";
               const imageSrc = resource.image || PLACEHOLDER_IMAGE;
@@ -126,6 +150,10 @@ const ResourceLibrary = ({
                         }}
                       >
                         {description}
+                      </p>
+
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                        {formatAddedTime(resource.createdAt)}
                       </p>
                     </div>
                   </a>

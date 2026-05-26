@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   HomeIcon,
   LayoutGridIcon,
@@ -23,8 +22,6 @@ import {
 } from "lucide-react";
 
 const MainLayout = ({ children }) => {
-  const [activeTab, setActiveTab] = useState("today");
-
   return (
     <div className="flex flex-row h-screen overflow-hidden">
       <aside className="flex h-full">
@@ -114,9 +111,7 @@ const MainLayout = ({ children }) => {
 
 export default MainLayout;
 
-function NavItem({ icon, label, active, id }) {
-  const isActive = active === id;
-
+function NavItem({ icon, label }) {
   return (
     <button className="flex gap-4 text-gray-500 font-bold">
       <span>{icon}</span>

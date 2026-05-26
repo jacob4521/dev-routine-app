@@ -211,6 +211,7 @@ function App() {
         title: data.title || "Saved Link",
         description: data.description || "",
         image: data.image || "",
+        createdAt: new Date().toISOString(),
       };
 
       setResources((prevResources) => [newResource, ...prevResources]);
@@ -221,6 +222,7 @@ function App() {
         title: "Saved Link",
         description: "Preview unavailable.",
         image: "",
+        createdAt: new Date().toISOString(),
       };
 
       setResources((prevResources) => [fallbackResource, ...prevResources]);

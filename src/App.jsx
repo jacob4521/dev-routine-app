@@ -50,6 +50,8 @@ function App() {
   const [newTaskCategory, setNewTaskCategory] = useState("Work");
   const [planningIdeaId, setPlanningIdeaId] = useState(null);
   const [isFetchingLink, setIsFetchingLink] = useState(false);
+  const [taskToFocusId, setTaskToFocusId] = useState(null);
+  const [taskFocusTick, setTaskFocusTick] = useState(0);
 
   const categoryColors = {
     Work: "bg-red-100 text-red-600",
@@ -426,10 +428,22 @@ function App() {
   const latestLog = dailyLogs[0];
   const latestIdea = inboxIdeas[0];
 
+  const openTasksPage = (taskId = runningTaskId) => {
+    setTaskToFocusId(taskId || null);
+    setTaskFocusTick((tick) => tick + 1);
+    setActiveTab("tasks");
+  };
+
 
 
   return (
-    <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+    <MainLayout
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      runningTask={runningTask}
+      toggleTimer={toggleTimer}
+      onOpenTasks={openTasksPage}
+    >
       {activeTab === "dashboard" && (
         <div className="space-y-6">
           <section className="overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
@@ -452,7 +466,7 @@ function App() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="button"
-                    onClick={() => setActiveTab("tasks")}
+                    onClick={() => openTasksPage()}
                     className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
                   >
                     Open Tasks
@@ -572,7 +586,7 @@ function App() {
                           </div>
                           <button
                             type="button"
-                            onClick={() => setActiveTab("tasks")}
+                            onClick={() => openTasksPage(task.id)}
                             className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
                           >
                             Open
@@ -756,6 +770,8 @@ function App() {
             categoryColors={categoryColors}
             handleAddSubTask={handleAddSubTask}
             runningTaskId={runningTaskId}
+            focusTaskId={taskToFocusId}
+            focusTaskTick={taskFocusTick}
             toggleTimer={toggleTimer}
             handleAddLink={handleAddLink}
             handleRemoveLink={handleRemoveLink}

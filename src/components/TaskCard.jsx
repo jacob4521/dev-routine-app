@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Circle,
   Clock,
@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 const TaskCard = ({
+  cardId,
   id,
   title,
   category,
@@ -30,6 +31,8 @@ const TaskCard = ({
   handleAddSubTask,
   allTasks,
   runningTaskId,
+  focusTaskId,
+  focusTaskTick,
   toggleTimer,
   timeSpent,
   isSubTask = false,
@@ -47,12 +50,40 @@ const TaskCard = ({
   const [editedTitle, setEditedTitle] = useState(title);
   const [newLink, setNewLink] = useState("");
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+  const cardRef = useRef(null);
 
   // Derived state
   const isRunning = runningTaskId === id;
+  const isFocusTarget = focusTaskId === id;
   const hasInCompleteSubTasks = allTasks.some(
     (task) => task.parentId === id && !task.completed,
   );
+
+  const isAncestorOfFocusedTask = focusTaskId
+    ? (() => {
+        let currentTask = allTasks.find((task) => task.id === focusTaskId);
+
+        while (currentTask?.parentId !== null && currentTask?.parentId !== undefined) {
+          if (currentTask.parentId === id) return true;
+          currentTask = allTasks.find((task) => task.id === currentTask.parentId);
+        }
+
+        return false;
+      })()
+    : false;
+
+  useEffect(() => {
+    if (!isFocusTarget || !cardRef.current) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [focusTaskId, focusTaskTick, isFocusTarget]);
+
+  const isAutoExpanded = isFocusTarget || isAncestorOfFocusedTask;
+  const isCardExpanded = isExpanded || isAutoExpanded;
 
   const getDescendantsTime = (parentId) => {
     return allTasks
@@ -108,7 +139,7 @@ const TaskCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              hasInCompleteSubTasks ? setIsExpanded(!isExpanded) : onToggle(id);
+              hasInCompleteSubTasks ? setIsExpanded(!isCardExpanded) : onToggle(id);
             }}
             className="text-gray-300 hover:text-emerald-500 transition-colors"
           >
@@ -138,7 +169,7 @@ const TaskCard = ({
             />
           ) : (
             <div
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={() => setIsExpanded(!isCardExpanded)}
               className={`font-medium text-sm cursor-pointer select-none transition-colors ${completed ? "text-gray-400 line-through" : "text-gray-700 group-hover:text-gray-900"}`}
             >
               {title}
@@ -196,19 +227,19 @@ const TaskCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setIsExpanded(!isExpanded);
+              setIsExpanded(!isCardExpanded);
             }}
             className="text-gray-400 hover:text-gray-900 p-1 rounded-md hover:bg-gray-200 transition-colors"
           >
             <ChevronRight
               size={16}
-              className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+              className={`transition-transform duration-200 ${isCardExpanded ? "rotate-180" : ""}`}
             />
           </button>
         </div>
       </div>
 
-      {isExpanded && (
+      {isCardExpanded && (
         <div className="pl-6 py-2 flex flex-col gap-2 w-full border-l-2 border-gray-100 ml-3">
           {allTasks
             .filter((task) => task.parentId === id)
@@ -224,6 +255,8 @@ const TaskCard = ({
                 handleAddSubTask={handleAddSubTask}
                 allTasks={allTasks}
                 runningTaskId={runningTaskId}
+                focusTaskId={focusTaskId}
+                focusTaskTick={focusTaskTick}
                 toggleTimer={toggleTimer}
                 isSubTask={true}
                 handleAddLink={handleAddLink}
@@ -283,6 +316,8 @@ const TaskCard = ({
               handleAddSubTask={handleAddSubTask}
               allTasks={allTasks}
               runningTaskId={runningTaskId}
+              focusTaskId={focusTaskId}
+              focusTaskTick={focusTaskTick}
               toggleTimer={toggleTimer}
               isSubTask={true}
               handleAddLink={handleAddLink}
@@ -321,14 +356,14 @@ const TaskCard = ({
   );
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      {isExpanded ? (
+    <div ref={cardRef} id={cardId} className="flex flex-col gap-3 w-full scroll-mt-28">
+      {isCardExpanded ? (
         // The Main Task Row - Expanded View
         <div
           className={
             isSubTask
-              ? "bg-gray-50/50 border border-gray-200 rounded-xl p-3 flex flex-col relative"
-              : "bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden"
+              ? `bg-gray-50/50 border border-gray-200 rounded-xl p-3 flex flex-col relative ${isRunning ? "ring-2 ring-orange-200 bg-orange-50/40" : ""}`
+              : `bg-white border shadow-sm hover:shadow-md transition-all rounded-2xl p-4 flex flex-col gap-4 relative overflow-hidden ${isRunning ? "border-orange-200 ring-2 ring-orange-100" : "border-gray-100"}`
           }
         >
           <div className="flex items-center justify-between">
@@ -341,7 +376,7 @@ const TaskCard = ({
                 onClick={(e) => {
                   e.stopPropagation();
                   hasInCompleteSubTasks
-                    ? setIsExpanded(!isExpanded)
+                    ? setIsExpanded(!isCardExpanded)
                     : onToggle(id);
                 }}
                 className="text-gray-300 hover:text-emerald-500 transition-colors"
@@ -387,6 +422,11 @@ const TaskCard = ({
                 )}
 
                 <div className="flex items-center gap-2 text-sm text-gray-500 mt-1 font-medium">
+                  {isRunning && (
+                    <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-orange-700">
+                      Running
+                    </span>
+                  )}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -408,7 +448,7 @@ const TaskCard = ({
                 onClick={() => {
                   if (!completed) toggleTimer(id);
                 }}
-                className="flex items-center gap-2 bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-200 font-mono font-bold text-sm cursor-pointer"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border font-mono font-bold text-sm cursor-pointer ${isRunning ? "bg-orange-100 text-orange-700 border-orange-300" : "bg-orange-50 text-orange-600 border-orange-200"}`}
               >
                 <button className="cursor-pointer flex items-center gap-2">
                   {isRunning ? (
@@ -471,14 +511,14 @@ const TaskCard = ({
         subTaskCollapsed
       ) : (
         // The Main Card Container - Collapsed Task Card
-        <div className="group bg-white p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between">
+        <div className={`group bg-white p-4 shadow-sm hover:shadow-md transition-all rounded-2xl flex items-center justify-between border ${isRunning ? "border-orange-200 ring-2 ring-orange-100" : "border-gray-100"}`}>
           {/* Left Side */}
           <div className="flex items-center gap-4">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                hasInCompleteSubTasks
-                  ? setIsExpanded(!isExpanded)
+                  hasInCompleteSubTasks
+                  ? setIsExpanded(!isCardExpanded)
                   : onToggle(id);
               }}
               className="text-gray-300 hover:text-emerald-500 transition-colors"
@@ -509,6 +549,11 @@ const TaskCard = ({
               <div className="flex items-center gap-2 text-gray-500 mt-1 font-medium">
                 <Clock className="w-4 h-4" />
                 <span>02:00 PM - 03:00 PM</span>
+                {isRunning && (
+                  <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-orange-700">
+                    Running now
+                  </span>
+                )}
               </div>
             </div>
           </div>

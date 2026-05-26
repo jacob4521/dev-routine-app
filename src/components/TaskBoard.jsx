@@ -13,6 +13,8 @@ const TaskBoard = ({
   setNewTaskTitle,
   handleAddTask,
   runningTaskId,
+  focusTaskId,
+  focusTaskTick,
   inProgressTasks = runningTaskId ? 1 : 0,
   tasks,
   deleteTask,
@@ -27,6 +29,10 @@ const TaskBoard = ({
   handlePriorityChange,
 }) => {
   const mainTasks = tasks.filter((task) => task.parentId === null);
+  const runningTask = mainTasks.find((task) => task.id === runningTaskId);
+  const orderedMainTasks = runningTask
+    ? [runningTask, ...mainTasks.filter((task) => task.id !== runningTaskId)]
+    : mainTasks;
   const totalTasks = mainTasks.length;
   const completedTasks = mainTasks.filter((task) => task.completed).length;
   const toDoTasks = totalTasks - completedTasks;
@@ -146,6 +152,33 @@ const TaskBoard = ({
 
       {/* Task List Section */}
       <div className="flex flex-col gap-4">
+        {runningTask && (
+          <div className="rounded-3xl border border-orange-200 bg-orange-50 px-5 py-4 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-orange-600">
+                  Currently running
+                </p>
+                <h3 className="mt-1 text-xl font-bold text-orange-950">
+                  {runningTask.title}
+                </h3>
+                <p className="mt-1 text-sm text-orange-900/75">
+                  This task is active right now, so it stays visible even if the rest of the list is collapsed.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => toggleTimer(runningTask.id)}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-700"
+              >
+                <Clock className="h-4 w-4" />
+                Stop timer
+              </button>
+            </div>
+          </div>
+        )}
+
         {mainTasks.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 mt-4">
             <p className="text-4xl mb-2">☕</p>
@@ -153,9 +186,10 @@ const TaskBoard = ({
             <p className="text-gray-600">You have no tasks for today!</p>
           </div>
         ) : (
-          mainTasks.map((task) => (
+          orderedMainTasks.map((task) => (
             <TaskCard
               key={task.id}
+              cardId={`task-card-${task.id}`}
               id={task.id}
               title={task.title}
               category={task.category}
@@ -170,6 +204,8 @@ const TaskBoard = ({
               handleAddSubTask={handleAddSubTask}
               allTasks={tasks}
               runningTaskId={runningTaskId}
+              focusTaskId={focusTaskId}
+              focusTaskTick={focusTaskTick}
               toggleTimer={toggleTimer}
               parentId={task.parentId}
               timeSpent={task.timeSpent}

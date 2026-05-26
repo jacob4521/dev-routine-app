@@ -21,7 +21,7 @@ import {
   PieChartIcon,
 } from "lucide-react";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children, activeTab, setActiveTab }) => {
   return (
     <div className="flex flex-row h-screen overflow-hidden">
       <aside className="flex h-full">
@@ -60,11 +60,37 @@ const MainLayout = ({ children }) => {
           <div className="overflow-y-auto flex-1 no-scrollbar border-r border-gray-100">
             {/* Top Section */}
             <div className="flex flex-col gap-5 mt-8 px-6 w-full">
-              <NavItem icon={<CalendarDaysIcon size={18} />} label="Allday" />
-              <NavItem icon={<ClockIcon size={18} />} label="Today" />
-              <NavItem icon={<Calendar1Icon size={18} />} label="Tomorrow" />
-              <NavItem icon={<CalendarXIcon size={18} />} label="Next 7 Days" />
-              <NavItem icon={<Inbox size={18} />} label="Inbox" />
+              <NavItem
+                icon={<HomeIcon size={18} />}
+                label="Dashboard"
+                isActive={activeTab === "dashboard"}
+                onClick={() => setActiveTab("dashboard")}
+              />
+              <NavItem
+                icon={<CalendarDaysIcon size={18} />}
+                label="Allday"
+                onClick={() => setActiveTab("tasks")}
+              />
+              <NavItem
+                icon={<ClockIcon size={18} />}
+                label="Today"
+                onClick={() => setActiveTab("tasks")}
+              />
+              <NavItem
+                icon={<Calendar1Icon size={18} />}
+                label="Tomorrow"
+                onClick={() => setActiveTab("tasks")}
+              />
+              <NavItem
+                icon={<CalendarXIcon size={18} />}
+                label="Next 7 Days"
+                onClick={() => setActiveTab("tasks")}
+              />
+              <NavItem
+                icon={<Inbox size={18} />}
+                label="Inbox"
+                onClick={() => setActiveTab("ideas")}
+              />
             </div>
 
             {/* Middle Section */}
@@ -97,9 +123,22 @@ const MainLayout = ({ children }) => {
           </div>
 
           <div className="p-2 flex flex-col gap-6 border-t border-gray-100 pt-7">
-            <NavItem icon={<CheckCircle2Icon size={18} />} label="Completed" />
-            <NavItem icon={<Trash2Icon size={18} />} label="Trash" />
-            <NavItem icon={<PieChartIcon size={18} />} label="Summary" />
+            <NavItem
+              icon={<CheckCircle2Icon size={18} />}
+              label="Completed"
+              onClick={() => setActiveTab("tasks")}
+            />
+            <NavItem
+              icon={<Trash2Icon size={18} />}
+              label="Trash"
+              onClick={() => setActiveTab("tasks")}
+            />
+            <NavItem
+              icon={<PieChartIcon size={18} />}
+              label="Dashboard"
+              isActive={activeTab === "dashboard"}
+              onClick={() => setActiveTab("dashboard")}
+            />
           </div>
         </div>
       </aside>
@@ -111,9 +150,13 @@ const MainLayout = ({ children }) => {
 
 export default MainLayout;
 
-function NavItem({ icon, label }) {
+function NavItem({ icon, label, onClick, isActive }) {
   return (
-    <button className="flex gap-4 text-gray-500 font-bold">
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex gap-4 font-bold transition ${isActive ? "text-slate-900" : "text-gray-500 hover:text-gray-900"}`}
+    >
       <span>{icon}</span>
       <span className="text-sm ">{label}</span>
     </button>

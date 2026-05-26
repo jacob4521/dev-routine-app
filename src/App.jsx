@@ -212,6 +212,7 @@ function App() {
         description: data.description || "",
         image: data.image || "",
         createdAt: new Date().toISOString(),
+        isCompleted: false,
       };
 
       setResources((prevResources) => [newResource, ...prevResources]);
@@ -234,6 +235,16 @@ function App() {
   const handleDeleteResource = (id) => {
     setResources((prevResources) =>
       prevResources.filter((resource) => resource.id !== id),
+    );
+  };
+
+  const handleToggleResourceStatus = (id) => {
+    setResources((prevResources) =>
+      prevResources.map((resource) =>
+        resource.id === id
+          ? { ...resource, isCompleted: !resource.isCompleted }
+          : resource,
+      ),
     );
   };
 
@@ -484,6 +495,7 @@ function App() {
             resources={resources}
             onAddResource={handleAddResource}
             onDeleteResource={handleDeleteResource}
+            onToggleResource={handleToggleResourceStatus}
             isFetching={isFetchingLink}
           />
         )}

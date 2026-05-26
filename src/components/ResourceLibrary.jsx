@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Trash2 } from "lucide-react";
+import { CheckCircle2, Loader2, Trash2 } from "lucide-react";
 
 const PLACEHOLDER_IMAGE =
   "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675' viewBox='0 0 1200 675'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23dbeafe'/%3E%3Cstop offset='100%25' stop-color='%23eff6ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='675' rx='48' fill='url(%23g)'/%3E%3Cpath d='M480 270h240v160H480z' fill='none' stroke='%233b82f6' stroke-width='16' stroke-linejoin='round'/%3E%3Cpath d='M520 410l62-70 56 52 42-34 60 52' fill='none' stroke='%233b82f6' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='560' cy='325' r='18' fill='%233b82f6'/%3E%3Ctext x='600' y='500' text-anchor='middle' fill='%230f172a' font-family='Arial, sans-serif' font-size='34' font-weight='700'%3ELink Preview%3C/text%3E%3C/svg%3E";
@@ -8,6 +8,7 @@ const ResourceLibrary = ({
   resources,
   onAddResource,
   onDeleteResource,
+  onToggleResource,
   isFetching,
 }) => {
   const [url, setUrl] = useState("");
@@ -103,23 +104,24 @@ const ResourceLibrary = ({
               const title = resource.title || "Saved Link";
               const description = resource.description || "Preview unavailable.";
               const imageSrc = resource.image || PLACEHOLDER_IMAGE;
+              const isCompleted = Boolean(resource.isCompleted);
 
               return (
                 <article
                   key={resource.id}
-                  className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <a
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block h-full"
+                    className="block flex-1"
                   >
                     <div className="relative aspect-16/10 overflow-hidden bg-gray-100">
                       <img
                         src={imageSrc}
                         alt={title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${isCompleted ? "opacity-60 grayscale" : ""}`}
                         onError={(event) => {
                           event.currentTarget.src = PLACEHOLDER_IMAGE;
                         }}
@@ -129,7 +131,7 @@ const ResourceLibrary = ({
 
                     <div className="space-y-3 p-5">
                       <h3
-                        className="text-lg font-bold text-gray-900"
+                        className={`text-lg font-bold text-gray-900 ${isCompleted ? "line-through decoration-2 decoration-gray-400/80" : ""}`}
                         style={{
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
@@ -158,14 +160,26 @@ const ResourceLibrary = ({
                     </div>
                   </a>
 
-                  <button
-                    type="button"
-                    onClick={() => onDeleteResource(resource.id)}
-                    className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-md backdrop-blur transition hover:bg-red-50 hover:text-red-600"
-                    aria-label={`Delete ${title}`}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <div className="flex items-center justify-end gap-2 border-t border-gray-100 px-4 py-4">
+                    <button
+                      type="button"
+                      onClick={() => onToggleResource(resource.id)}
+                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${isCompleted ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                      aria-label={`${isCompleted ? "Mark" : "Mark"} ${title} as ${isCompleted ? "not completed" : "completed"}`}
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      {isCompleted ? "Done" : "Mark Done"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onDeleteResource(resource.id)}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm ring-1 ring-inset ring-gray-200 transition hover:bg-red-50 hover:text-red-600"
+                      aria-label={`Delete ${title}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </article>
               );
             })}

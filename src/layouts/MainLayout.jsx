@@ -83,6 +83,10 @@ const MainLayout = ({
                 </div>
               </div>
 
+              <span className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold font-mono text-white">
+                {formatTime(runningTask.timeSpent)}
+              </span>
+
               <button
                 type="button"
                 onClick={() => onOpenTasks?.(runningTask.id)}

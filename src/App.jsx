@@ -406,15 +406,293 @@ function App() {
     setTasks(updatedTasks);
   };
 
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const activeTasks = totalTasks - completedTasks;
+  const totalResources = resources.length;
+  const pinnedResources = resources.filter((resource) => resource.isPinned).length;
+  const completedResources = resources.filter(
+    (resource) => resource.isCompleted,
+  ).length;
+  const totalIdeas = inboxIdeas.length;
+  const totalLogs = dailyLogs.length;
+
+  const sortedTaskList = sortTaskPriorities(tasks);
+  const urgentTasks = sortedTaskList.filter((task) => !task.completed).slice(0, 3);
+  const runningTask = tasks.find((task) => task.id === runningTaskId);
+  const nextTask = sortedTaskList.find((task) => !task.completed);
+  const pinnedResourceList = resources.filter((resource) => resource.isPinned).slice(0, 3);
+  const nextResource = resources.find((resource) => !resource.isCompleted);
+  const latestLog = dailyLogs[0];
+  const latestIdea = inboxIdeas[0];
+
 
 
   return (
     <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
       {activeTab === "dashboard" && (
-        <div>
-          <h2 className="text-3xl font-bold mb-6">Welcome to Dashboard! 🚀</h2>
+        <div className="space-y-6">
+          <section className="overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
+            <div className="flex flex-col gap-6 p-6 md:p-8 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/55">
+                  Dashboard
+                </p>
+                <div>
+                  <h2 className="text-3xl font-black tracking-tight md:text-5xl">
+                    Your next important action, surfaced first.
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300 md:text-base">
+                    This landing area shows what needs attention now, what is currently running,
+                    and what should stay visible every day. Stats live below so the page stays
+                    reminder-first.
+                  </p>
+                </div>
 
-          <PomodoroTimer />
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("tasks")}
+                    className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-slate-100"
+                  >
+                    Open Tasks
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("resources")}
+                    className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15"
+                  >
+                    Open Resources
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("ideas")}
+                    className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15"
+                  >
+                    Open Inbox
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid w-full gap-3 sm:grid-cols-3 lg:max-w-xl">
+                <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur">
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/55">Open tasks</p>
+                  <p className="mt-1 text-2xl font-bold">{activeTasks}</p>
+                  <p className="mt-1 text-xs text-white/65">waiting to be done</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur">
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/55">Pinned</p>
+                  <p className="mt-1 text-2xl font-bold">{pinnedResources}</p>
+                  <p className="mt-1 text-xs text-white/65">long-term reminders</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur">
+                  <p className="text-xs uppercase tracking-[0.2em] text-white/55">Focus</p>
+                  <p className="mt-1 text-2xl font-bold">{completedTasks}/{totalTasks}</p>
+                  <p className="mt-1 text-xs text-white/65">tasks completed</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="space-y-6">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <OverviewCard
+                title="Tasks"
+                value={`${completedTasks}/${totalTasks}`}
+                note={`${activeTasks} still open`}
+              />
+              <OverviewCard
+                title="Resources"
+                value={totalResources}
+                note={`${completedResources} marked done`}
+              />
+              <OverviewCard
+                title="Ideas"
+                value={totalIdeas}
+                note="Captured in the inbox"
+              />
+              <OverviewCard
+                title="Logs"
+                value={totalLogs}
+                note="Daily work entries"
+              />
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-2">
+                <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-500">
+                        Do now
+                      </p>
+                      <h3 className="mt-1 text-lg font-bold text-slate-900">Urgent tasks</h3>
+                    </div>
+                    <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                      {urgentTasks.length} items
+                    </span>
+                  </div>
+
+                  {runningTask ? (
+                    <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                        Currently running
+                      </p>
+                      <p className="mt-1 font-semibold text-emerald-950">{runningTask.title}</p>
+                      <p className="mt-1 text-sm text-emerald-800">Keep going. This is the active focus item.</p>
+                    </div>
+                  ) : nextTask ? (
+                    <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Next task
+                      </p>
+                      <p className="mt-1 font-semibold text-slate-900">{nextTask.title}</p>
+                      <p className="mt-1 text-sm text-slate-500">Start here if nothing is already running.</p>
+                    </div>
+                  ) : (
+                    <div className="mb-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <p className="font-semibold text-slate-900">No open tasks right now.</p>
+                      <p className="mt-1 text-sm text-slate-500">Add work to keep the dashboard useful as a reminder surface.</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    {urgentTasks.length > 0 ? (
+                      urgentTasks.map((task, index) => (
+                        <div
+                          key={task.id}
+                          className="flex items-start justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3"
+                        >
+                          <div>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                              Priority {index + 1}
+                            </p>
+                            <p className="mt-1 font-semibold text-slate-900">{task.title}</p>
+                            <p className="mt-1 text-sm text-slate-500">{task.category} · {task.priority}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("tasks")}
+                            className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+                          >
+                            Open
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">
+                        No urgent tasks are queued. Your dashboard is clear for now.
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Keep visible
+                      </p>
+                      <h3 className="mt-1 text-lg font-bold text-slate-900">Pinned reminders</h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("resources")}
+                      className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+                    >
+                      Open resources
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {pinnedResourceList.length > 0 ? (
+                      pinnedResourceList.map((resource) => (
+                        <div
+                          key={resource.id}
+                          className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3"
+                        >
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700">
+                            Pinned reminder
+                          </p>
+                          <p className="mt-1 font-semibold text-amber-950">{resource.title || "Saved Link"}</p>
+                          <p className="mt-1 line-clamp-2 text-sm text-amber-900/75">
+                            {resource.description || "Open this often enough to stay top of mind."}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">
+                        Pin long-term resources here so they always stay on the landing page.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
+                    <ActionRow
+                      label="Latest log"
+                      value={latestLog ? latestLog.title : "No logs yet"}
+                      helper={latestLog ? latestLog.date : "Track your day as you work."}
+                    />
+                    <ActionRow
+                      label="Latest idea"
+                      value={latestIdea ? latestIdea.title : "No ideas captured"}
+                      helper={latestIdea ? "Ready to be planned into tasks." : "Capture ideas before they vanish."}
+                    />
+                    <ActionRow
+                      label="Resource status"
+                      value={`${completedResources}/${totalResources} watched`}
+                      helper={nextResource ? `Next to watch: ${nextResource.title}` : "All saved links have been consumed."}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Focus mode
+                  </p>
+                  <h3 className="mt-1 text-lg font-bold text-slate-900">
+                    Start a session and stay on track
+                  </h3>
+                </div>
+                <PomodoroTimer />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                <MiniPanel
+                  title="Pinned resources"
+                  value={pinnedResources}
+                  note="Always surfaced first"
+                  actionLabel="Open resources"
+                  onAction={() => setActiveTab("resources")}
+                />
+                <MiniPanel
+                  title="Inbox ideas"
+                  value={totalIdeas}
+                  note="Potential tasks waiting"
+                  actionLabel="Open inbox"
+                  onAction={() => setActiveTab("ideas")}
+                />
+                <MiniPanel
+                  title="Daily logs"
+                  value={totalLogs}
+                  note="Work history you can review"
+                  actionLabel="Open logs"
+                  onAction={() => setActiveTab("logs")}
+                />
+                <MiniPanel
+                  title="Open tasks"
+                  value={activeTasks}
+                  note="Ready for the next focus block"
+                  actionLabel="Open tasks"
+                  onAction={() => setActiveTab("tasks")}
+                />
+              </div>
+            </div>
+          </section>
         </div>
       )}
 
@@ -528,3 +806,40 @@ function App() {
 }
 
 export default App;
+
+function OverviewCard({ title, value, note }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{title}</p>
+      <p className="mt-3 text-3xl font-black tracking-tight text-slate-900">{value}</p>
+      <p className="mt-2 text-sm text-slate-500">{note}</p>
+    </div>
+  );
+}
+
+function ActionRow({ label, value, helper }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</p>
+      <p className="mt-1 line-clamp-1 font-semibold text-slate-900">{value}</p>
+      <p className="mt-1 text-sm text-slate-500">{helper}</p>
+    </div>
+  );
+}
+
+function MiniPanel({ title, value, note, actionLabel, onAction }) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{title}</p>
+      <p className="mt-3 text-3xl font-black tracking-tight text-slate-900">{value}</p>
+      <p className="mt-2 text-sm text-slate-500">{note}</p>
+      <button
+        type="button"
+        onClick={onAction}
+        className="mt-4 inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
+      >
+        {actionLabel}
+      </button>
+    </div>
+  );
+}

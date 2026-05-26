@@ -9,56 +9,88 @@ const IdeaInbox = ({
   deleteIdea,
 }) => {
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-sm border border-gray-100 mt-4">
-      <h3 className="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
-        💡 Idea Inbox
-      </h3>
+    <div className="mx-auto mt-8 max-w-5xl space-y-6">
+      <section className="overflow-hidden rounded-4xl border border-slate-200 bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 text-white shadow-[0_20px_60px_rgba(15,23,42,0.18)]">
+        <div className="flex flex-col gap-6 p-6 md:p-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl space-y-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/55">
+              Idea Inbox
+            </p>
+            <div>
+              <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                Capture sparks before they disappear.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 md:text-base">
+                Drop in half-formed thoughts, then turn them into tasks when the timing is right.
+              </p>
+            </div>
+          </div>
 
-      <div className="flex gap-2 mb-6">
-        <input
-          type="text"
-          placeholder="Got a new idea? Type it here..."
-          className="flex-1 border border-gray-300 px-4 py-2 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-          value={newIdeaTitle}
-          onChange={(e) => setNewIdeaTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleAddIdea(newIdeaTitle);
-            }
-          }}
-        />
+          <div className="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 backdrop-blur">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/55">Captured ideas</p>
+            <p className="mt-1 text-3xl font-black text-white">{inboxIdeas.length}</p>
+          </div>
+        </div>
+      </section>
 
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors whitespace-nowrap"
-          onClick={() => handleAddIdea(newIdeaTitle)}
-        >
-          Add Idea
-        </button>
-      </div>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+              Quick capture
+            </p>
+            <h3 className="mt-1 text-lg font-bold text-slate-900">Save a new thought</h3>
+          </div>
+        </div>
 
-      <div className="space-y-3">
+        <div className="flex flex-col gap-3 md:flex-row">
+          <input
+            type="text"
+            placeholder="Got a new idea? Type it here..."
+            className="flex-1 rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-500/15"
+            value={newIdeaTitle}
+            onChange={(e) => setNewIdeaTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddIdea(newIdeaTitle);
+              }
+            }}
+          />
+
+          <button
+            className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            onClick={() => handleAddIdea(newIdeaTitle)}
+          >
+            Add Idea
+          </button>
+        </div>
+      </section>
+
+      <section className="space-y-3">
         {inboxIdeas.length === 0 ? (
-          <div className="text-center py-10 bg-gray-50 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg">
+          <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-16 text-center text-slate-500 shadow-sm">
             <p className="text-3xl mb-2">🧠</p>
-            <p>No ideas yet. Brainstorm something awesome!</p>
+            <p className="font-semibold text-slate-700">No ideas yet.</p>
+            <p className="mt-1 text-sm">Brainstorm something and keep it here for later.</p>
           </div>
         ) : (
           inboxIdeas.map((idea) => (
             <div
               key={idea.id}
-              className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-100 hover:shadow-md transition-shadow group"
+              className="group flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <span className="text-gray-800 font-medium">{idea.title}</span>
-              <div className="flex gap-2">
+              <span className="min-w-0 flex-1 font-medium text-slate-900">{idea.title}</span>
+              <div className="flex shrink-0 gap-2">
                 <button
-                  className="text-sm bg-white border-gray-300 hover:border-blue-500 hover:text-blue-600 px-4 py-1.5 rounded-md font-medium transition-colors shadow-sm"
+                  className="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-sm font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600"
                   onClick={() => handlePlanIdea(idea)}
                 >
-                  Plan Idea 🚀
+                  Plan Idea
                 </button>
                 <button
-                  className="cursor-pointer"
+                  className="rounded-full p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                   onClick={() => deleteIdea(idea.id)}
+                  aria-label={`Delete idea ${idea.title}`}
                 >
                   ❌
                 </button>
@@ -66,7 +98,7 @@ const IdeaInbox = ({
             </div>
           ))
         )}
-      </div>
+      </section>
     </div>
   );
 };

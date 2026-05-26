@@ -41,21 +41,21 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto mt-6 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-6">
-      <section className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 h-fit sticky top-6">
-        <div className="mb-6">
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+    <div className="mx-auto mt-8 max-w-6xl space-y-6 lg:grid lg:grid-cols-[360px_1fr] lg:gap-6 lg:space-y-0">
+      <section className="h-fit rounded-3xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-6">
+        <div className="mb-6 rounded-2xl bg-slate-950 px-4 py-4 text-white">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
             Daily Work Tracker
           </p>
-          <h2 className="text-2xl font-bold text-gray-900 mt-1">Log your work</h2>
-          <p className="text-sm text-gray-500 mt-2">
+          <h2 className="mt-2 text-2xl font-black tracking-tight">Log your work</h2>
+          <p className="mt-2 text-sm text-slate-300">
             Capture what you finished today and keep a running history.
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Title
             </label>
             <input
@@ -63,12 +63,12 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Finished Auth API"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-500/15"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Description
             </label>
             <textarea
@@ -76,12 +76,12 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Implemented JWT and tested with Postman"
               rows={5}
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+              className="w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-500/15"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Time Spent
             </label>
             <input
@@ -89,37 +89,37 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
               value={timeSpent}
               onChange={(e) => setTimeSpent(e.target.value)}
               placeholder="2 hours 30 mins"
-              className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+              className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-500/15"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+            className="w-full rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             Log Work
           </button>
         </form>
       </section>
 
-      <section className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 min-h-130">
-        <div className="flex items-end justify-between gap-4 mb-6">
+      <section className="min-h-130 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
               History
             </p>
-            <h3 className="text-xl font-bold text-gray-900">Work logs</h3>
+            <h3 className="mt-1 text-xl font-bold text-slate-900">Work logs</h3>
           </div>
-          <p className="text-sm text-gray-500">{filteredLogs.length} entries</p>
+          <p className="text-sm text-slate-500">{filteredLogs.length} entries</p>
         </div>
 
-        <div className="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+        <div className="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
                 Filter by Date
               </p>
-              <h4 className="mt-1 text-sm font-semibold text-gray-700">
+              <h4 className="mt-1 text-sm font-semibold text-slate-700">
                 View logs from a specific day
               </h4>
             </div>
@@ -129,14 +129,14 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
                 type="date"
                 value={filterDate}
                 onChange={(e) => setFilterDate(e.target.value)}
-                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-500/15"
               />
 
               <button
                 type="button"
                 onClick={() => setFilterDate("")}
                 disabled={!filterDate}
-                className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Clear Filter
               </button>
@@ -145,15 +145,15 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
         </div>
 
         {dailyLogs.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-16 text-center text-gray-500">
+          <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-16 text-center text-slate-500">
             <p className="text-3xl mb-3">📝</p>
-            <p className="font-medium">No daily logs yet.</p>
+            <p className="font-semibold text-slate-700">No daily logs yet.</p>
             <p className="text-sm mt-1">Add your first work log on the left.</p>
           </div>
         ) : filteredLogs.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 px-6 py-16 text-center text-gray-500">
+          <div className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 px-6 py-16 text-center text-slate-500">
             <p className="text-3xl mb-3">🔎</p>
-            <p className="font-medium">No logs found for this date.</p>
+            <p className="font-semibold text-slate-700">No logs found for this date.</p>
             <p className="text-sm mt-1">Try another date or clear the filter.</p>
           </div>
         ) : (
@@ -161,27 +161,27 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
             {sortedDates.map((date) => (
               <div key={date} className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold uppercase tracking-wider text-gray-400">
+                  <span className="text-sm font-bold uppercase tracking-[0.2em] text-slate-400">
                     {date}
                   </span>
-                  <span className="h-px flex-1 bg-gray-100" />
+                  <span className="h-px flex-1 bg-slate-200" />
                 </div>
 
                 <div className="space-y-3">
                   {groupedLogs[date].map((log) => (
                     <article
                       key={log.id}
-                      className="rounded-2xl border border-gray-100 bg-gray-50 p-5 shadow-sm transition-shadow hover:shadow-md"
+                      className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                     >
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
-                          <h4 className="text-lg font-semibold text-gray-900">
+                          <h4 className="text-lg font-semibold text-slate-900">
                             {log.title}
                           </h4>
-                          <p className="mt-2 text-sm leading-6 text-gray-600 whitespace-pre-wrap">
+                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">
                             {log.description || "No description added."}
                           </p>
-                          <div className="mt-4 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-600 border border-gray-200">
+                          <div className="mt-4 inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
                             {log.timeSpent || "Time not specified"}
                           </div>
                         </div>
@@ -189,7 +189,7 @@ const DailyWorkTracker = ({ dailyLogs, onAddLog, onDeleteLog }) => {
                         <button
                           type="button"
                           onClick={() => onDeleteLog(log.id)}
-                          className="shrink-0 rounded-full p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                          className="shrink-0 rounded-full p-2 text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                           aria-label={`Delete log ${log.title}`}
                         >
                           <Trash2 className="h-4 w-4" />

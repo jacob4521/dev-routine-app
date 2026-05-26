@@ -36,17 +36,25 @@ const TaskBoard = ({
   const totalTasks = mainTasks.length;
   const completedTasks = mainTasks.filter((task) => task.completed).length;
   const toDoTasks = totalTasks - completedTasks;
+  const todayLabel = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date());
 
   return (
     <div className="w-full max-w-5xl mx-auto flex flex-col gap-8 pb-10 mt-8">
       {/* Header */}
       <div className="w-full flex justify-between items-end pb-2">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-            Good Morning, Alex! 👋
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+            Task Board
+          </p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-slate-900">
+            Your work, organized for today.
           </h1>
-          <p className="text-gray-500 font-medium mt-1">
-            Today, 1st April 2026
+          <p className="mt-1 font-medium text-slate-500">
+            {todayLabel}
           </p>
         </div>
         <div className="flex gap-4">

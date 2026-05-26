@@ -711,51 +711,7 @@ function App() {
       )}
 
       {/* මේ පහළින් තියෙන ටික තමයි අර MainLayout එකේ 'children' විදිහට යන්නේ */}
-      <div>
-        <div>
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "dashboard" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("dashboard")}
-          >
-            🏠 Dashboard
-          </button>
-
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "tasks" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("tasks")}
-          >
-            📋 My Tasks
-          </button>
-
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "ideas" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("ideas")}
-          >
-            💡 Idea Inbox
-          </button>
-
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "brain-dumps" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("brain-dumps")}
-          >
-            🧠 Brain Dumps
-          </button>
-
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "logs" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("logs")}
-          >
-            📝 Daily Log
-          </button>
-
-          <button
-            className={`px-5 py-2.5 font-semibold text-sm rounded-t-lg transition-all duration-200 ${activeTab === "resources" ? "bg-blue-50 text-blue-700 border-b-2 border-blue-600 shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
-            onClick={() => setActiveTab("resources")}
-          >
-            📚 Resources
-          </button>
-        </div>
-
+      <div className="pt-6">
         {activeTab === "tasks" && (
           <TaskBoard
             newTaskTitle={newTaskTitle}

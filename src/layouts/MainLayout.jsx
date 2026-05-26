@@ -27,7 +27,7 @@ const MainLayout = ({
   return (
     <div className="flex flex-row h-screen overflow-hidden">
       <aside className="flex h-full">
-        <div className="flex h-screen w-44 flex-col border-r border-slate-200 bg-white px-4 py-5">
+        <div className="flex h-screen w-56 flex-col border-r border-slate-200 bg-white px-4 py-5">
           <div className="mb-6 flex items-center gap-3 px-1">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-sm">
               <HomeIcon size={18} strokeWidth={2} />
@@ -40,7 +40,8 @@ const MainLayout = ({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="space-y-2">
+            <SectionLabel label="Core" />
             <NavItem
               icon={<HomeIcon size={18} />}
               label="Dashboard"
@@ -57,6 +58,15 @@ const MainLayout = ({
               label="Inbox"
               onClick={() => setActiveTab("ideas")}
             />
+
+            <div className="pt-4">
+              <SectionLabel label="Workspace" />
+              <div className="mt-2 space-y-1.5">
+                <NavItem label="Brain Dumps" onClick={() => setActiveTab("brain-dumps")} />
+                <NavItem label="Daily Log" onClick={() => setActiveTab("logs")} />
+                <NavItem label="Resources" onClick={() => setActiveTab("resources")} />
+              </div>
+            </div>
           </div>
         </div>
       </aside>
@@ -110,19 +120,22 @@ function NavItem({ icon, label, onClick, isActive }) {
     <button
       type="button"
       onClick={onClick}
-      className={`flex gap-4 font-bold transition ${isActive ? "text-slate-900" : "text-gray-500 hover:text-gray-900"}`}
+      className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left font-semibold transition ${isActive ? "bg-slate-950 text-white shadow-sm" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"}`}
     >
-      <span>{icon}</span>
-      <span className="text-sm ">{label}</span>
+      {icon ? (
+        <span className={isActive ? "text-white" : "text-slate-400"}>{icon}</span>
+      ) : (
+        <span className="h-2 w-2 shrink-0 rounded-full bg-slate-300" />
+      )}
+      <span className="text-sm">{label}</span>
     </button>
   );
 }
 
-function TagItem({ color, label }) {
+function SectionLabel({ label }) {
   return (
-    <button className="flex gap-4 items-center ml-6 text-gray-500 font-bold">
-      <ChevronRight size={16} strokeWidth={3} className={`${color} `} />
-      <span className="text-sm">{label}</span>
-    </button>
+    <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+      {label}
+    </p>
   );
 }

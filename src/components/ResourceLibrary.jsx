@@ -19,6 +19,32 @@ const ResourceLibrary = ({
     return timeA - timeB;
   });
 
+  // Group resources by date (yyyy-mm-dd) and split by completion status
+  const groupedByDate = sortedResources.reduce((acc, resource) => {
+    const dateKey = resource.createdAt
+      ? new Date(resource.createdAt).toISOString().slice(0, 10)
+      : new Date(resource.id).toISOString().slice(0, 10);
+
+    if (!acc[dateKey]) acc[dateKey] = [];
+    acc[dateKey].push(resource);
+    return acc;
+  }, {});
+
+  const dateGroups = Object.keys(groupedByDate)
+    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+    .map((key) => {
+      const items = groupedByDate[key];
+      const notDone = items.filter((r) => !r.isCompleted);
+      const done = items.filter((r) => r.isCompleted);
+      const dateLabel = new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(new Date(key));
+
+      return { key, dateLabel, notDone, done };
+    });
+
   const formatAddedTime = (createdAt) => {
     if (!createdAt) return "Added: Unknown";
 
@@ -99,90 +125,193 @@ const ResourceLibrary = ({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {sortedResources.map((resource) => {
-              const title = resource.title || "Saved Link";
-              const description = resource.description || "Preview unavailable.";
-              const imageSrc = resource.image || PLACEHOLDER_IMAGE;
-              const isCompleted = Boolean(resource.isCompleted);
+          <div className="space-y-8">
+            {dateGroups.map(({ key, dateLabel, notDone, done }) => (
+              <section key={key} className="rounded-2xl bg-white">
+                <div className="px-4 py-3">
+                  <h4 className="text-sm font-semibold text-gray-600">{dateLabel}</h4>
+                </div>
 
-              return (
-                <article
-                  key={resource.id}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block flex-1"
-                  >
-                    <div className="relative aspect-16/10 overflow-hidden bg-gray-100">
-                      <img
-                        src={imageSrc}
-                        alt={title}
-                        className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${isCompleted ? "opacity-60 grayscale" : ""}`}
-                        onError={(event) => {
-                          event.currentTarget.src = PLACEHOLDER_IMAGE;
-                        }}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/45 to-transparent" />
-                    </div>
+                {notDone.length > 0 && (
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 px-4 pb-4">
+                    {notDone.map((resource) => {
+                      const title = resource.title || "Saved Link";
+                      const description = resource.description || "Preview unavailable.";
+                      const imageSrc = resource.image || PLACEHOLDER_IMAGE;
+                      const isCompleted = Boolean(resource.isCompleted);
 
-                    <div className="space-y-3 p-5">
-                      <h3
-                        className={`text-lg font-bold text-gray-900 ${isCompleted ? "line-through decoration-2 decoration-gray-400/80" : ""}`}
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {title}
-                      </h3>
+                      return (
+                        <article
+                          key={resource.id}
+                          className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
+                        >
+                          <a
+                            href={resource.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block flex-1"
+                          >
+                            <div className="relative aspect-16/10 overflow-hidden bg-gray-100">
+                              <img
+                                src={imageSrc}
+                                alt={title}
+                                className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${isCompleted ? "opacity-60 grayscale" : ""}`}
+                                onError={(event) => {
+                                  event.currentTarget.src = PLACEHOLDER_IMAGE;
+                                }}
+                              />
+                              <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/45 to-transparent" />
+                            </div>
 
-                      <p
-                        className="text-sm leading-6 text-gray-500"
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {description}
-                      </p>
+                            <div className="space-y-3 p-5">
+                              <h3
+                                className={`text-lg font-bold text-gray-900 ${isCompleted ? "line-through decoration-2 decoration-gray-400/80" : ""}`}
+                                style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {title}
+                              </h3>
 
-                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
-                        {formatAddedTime(resource.createdAt)}
-                      </p>
-                    </div>
-                  </a>
+                              <p
+                                className="text-sm leading-6 text-gray-500"
+                                style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                {description}
+                              </p>
 
-                  <div className="flex items-center justify-end gap-2 border-t border-gray-100 px-4 py-4">
-                    <button
-                      type="button"
-                      onClick={() => onToggleResource(resource.id)}
-                      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${isCompleted ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-                      aria-label={`${isCompleted ? "Mark" : "Mark"} ${title} as ${isCompleted ? "not completed" : "completed"}`}
-                    >
-                      <CheckCircle2 className="h-4 w-4" />
-                      {isCompleted ? "Done" : "Mark Done"}
-                    </button>
+                              <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                                {formatAddedTime(resource.createdAt)}
+                              </p>
+                            </div>
+                          </a>
 
-                    <button
-                      type="button"
-                      onClick={() => onDeleteResource(resource.id)}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm ring-1 ring-inset ring-gray-200 transition hover:bg-red-50 hover:text-red-600"
-                      aria-label={`Delete ${title}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                          <div className="flex items-center justify-end gap-2 border-t border-gray-100 px-4 py-4">
+                            <button
+                              type="button"
+                              onClick={() => onToggleResource(resource.id)}
+                              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${isCompleted ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                              aria-label={`${isCompleted ? "Mark" : "Mark"} ${title} as ${isCompleted ? "not completed" : "completed"}`}
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                              {isCompleted ? "Done" : "Mark Done"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => onDeleteResource(resource.id)}
+                              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm ring-1 ring-inset ring-gray-200 transition hover:bg-red-50 hover:text-red-600"
+                              aria-label={`Delete ${title}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
                   </div>
-                </article>
-              );
-            })}
+                )}
+
+                {done.length > 0 && (
+                  <div className="px-4 pb-6">
+                    <h5 className="mb-3 text-sm font-medium text-gray-500">Watched</h5>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                      {done.map((resource) => {
+                        const title = resource.title || "Saved Link";
+                        const description = resource.description || "Preview unavailable.";
+                        const imageSrc = resource.image || PLACEHOLDER_IMAGE;
+                        const isCompleted = Boolean(resource.isCompleted);
+
+                        return (
+                          <article
+                            key={resource.id}
+                            className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
+                          >
+                            <a
+                              href={resource.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block flex-1"
+                            >
+                              <div className="relative aspect-16/10 overflow-hidden bg-gray-100">
+                                <img
+                                  src={imageSrc}
+                                  alt={title}
+                                  className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${isCompleted ? "opacity-60 grayscale" : ""}`}
+                                  onError={(event) => {
+                                    event.currentTarget.src = PLACEHOLDER_IMAGE;
+                                  }}
+                                />
+                                <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-black/45 to-transparent" />
+                              </div>
+
+                              <div className="space-y-3 p-5">
+                                <h3
+                                  className={`text-lg font-bold text-gray-900 ${isCompleted ? "line-through decoration-2 decoration-gray-400/80" : ""}`}
+                                  style={{
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  {title}
+                                </h3>
+
+                                <p
+                                  className="text-sm leading-6 text-gray-500"
+                                  style={{
+                                    display: "-webkit-box",
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: "vertical",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  {description}
+                                </p>
+
+                                <p className="text-[11px] font-medium uppercase tracking-wide text-gray-400">
+                                  {formatAddedTime(resource.createdAt)}
+                                </p>
+                              </div>
+                            </a>
+
+                            <div className="flex items-center justify-end gap-2 border-t border-gray-100 px-4 py-4">
+                              <button
+                                type="button"
+                                onClick={() => onToggleResource(resource.id)}
+                                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${isCompleted ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                                aria-label={`${isCompleted ? "Mark" : "Mark"} ${title} as ${isCompleted ? "not completed" : "completed"}`}
+                              >
+                                <CheckCircle2 className="h-4 w-4" />
+                                {isCompleted ? "Done" : "Mark Done"}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => onDeleteResource(resource.id)}
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm ring-1 ring-inset ring-gray-200 transition hover:bg-red-50 hover:text-red-600"
+                                aria-label={`Delete ${title}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </section>
+            ))}
           </div>
         )}
       </section>

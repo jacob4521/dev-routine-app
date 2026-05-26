@@ -163,70 +163,40 @@ const MainLayout = ({
         </div>
       </aside>
 
-      <main className="overflow-y-auto flex-1 bg-gray-50 p-6 md:p-8">
-        <div className="sticky top-0 z-30 mb-6 rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
+      <main className="overflow-y-auto flex-1 bg-gray-50 px-6 pb-6 md:px-8 md:pb-8">
+        <div className="sticky top-0 z-30 -mx-6 mb-4 border-b border-slate-800 bg-slate-950/95 px-4 py-2 shadow-lg shadow-slate-900/20 backdrop-blur md:-mx-8">
           {runningTask ? (
-            <div className="flex items-center gap-4">
-              <div className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto no-scrollbar">
-                <span className="inline-flex shrink-0 items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-orange-700">
-                  Running now
-                </span>
-                <div className="min-w-0 overflow-x-auto no-scrollbar whitespace-nowrap">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                    Currently focused task
-                  </p>
-                  <h3 className="mt-0.5 text-sm font-bold text-slate-900">
-                    {runningTask.title}
-                  </h3>
-                </div>
-                <div className="ml-auto hidden shrink-0 items-center gap-2 md:flex">
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                    {runningTask.category || "Task"}
-                  </span>
-                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
-                    {runningTask.priority || "No Priority"}
-                  </span>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 font-mono text-xs font-semibold text-slate-700">
-                    {formatTime(runningTask.timeSpent)}
-                  </span>
-                </div>
-              </div>
+            <div className="mx-auto flex max-w-3xl items-center gap-3 rounded-2xl border border-white/10 bg-linear-to-r from-slate-900 to-slate-800 px-3 py-2 text-white ring-1 ring-white/5">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-orange-300 ring-1 ring-orange-400/20">
+                <Play className="h-3.5 w-3.5" />
+              </span>
 
-              <div className="flex shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => onOpenTasks?.(runningTask.id)}
-                  className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-200"
-                >
-                  Open task
-                </button>
-                <button
-                  type="button"
-                  onClick={() => toggleTimer(runningTask.id)}
-                  className="inline-flex items-center gap-2 rounded-full bg-orange-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-orange-700"
-                >
-                  <Pause className="h-3.5 w-3.5" />
-                  Stop
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                  No active task
-                </p>
-                <p className="mt-1 text-sm font-semibold text-slate-900">
-                  Start a task to keep the running bar visible on every page.
-                </p>
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <div className="marquee-track text-sm font-semibold text-white">
+                  <span>{runningTask.title}</span>
+                  <span className="mx-8 text-slate-500">•</span>
+                  <span>{runningTask.title}</span>
+                </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => onOpenTasks?.()}
-                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-700"
+                onClick={() => onOpenTasks?.(runningTask.id)}
+                className="shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/10"
               >
-                <Play className="h-3.5 w-3.5" />
+                Open tasks
+              </button>
+            </div>
+          ) : (
+            <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 rounded-2xl border border-dashed border-white/10 bg-slate-900/80 px-3 py-2 text-white ring-1 ring-white/5">
+              <p className="truncate text-sm font-semibold text-white">
+                No active task
+              </p>
+              <button
+                type="button"
+                onClick={() => onOpenTasks?.()}
+                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/15"
+              >
                 Open tasks
               </button>
             </div>

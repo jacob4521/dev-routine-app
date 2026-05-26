@@ -25,4 +25,23 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+
+  .marquee-track {
+    display: inline-flex;
+    width: max-content;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    animation: marquee-scroll 12s linear infinite;
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }

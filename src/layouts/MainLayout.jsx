@@ -51,20 +51,34 @@ const MainLayout = ({
             <NavItem
               icon={<ClockIcon size={18} />}
               label="Tasks"
+              isActive={activeTab === "tasks"}
               onClick={() => setActiveTab("tasks")}
             />
             <NavItem
               icon={<Inbox size={18} />}
               label="Inbox"
+              isActive={activeTab === "ideas"}
               onClick={() => setActiveTab("ideas")}
             />
 
             <div className="pt-4">
               <SectionLabel label="Workspace" />
               <div className="mt-2 space-y-1.5">
-                <NavItem label="Brain Dumps" onClick={() => setActiveTab("brain-dumps")} />
-                <NavItem label="Daily Log" onClick={() => setActiveTab("logs")} />
-                <NavItem label="Resources" onClick={() => setActiveTab("resources")} />
+                <NavItem
+                  label="Brain Dumps"
+                  isActive={activeTab === "brain-dumps"}
+                  onClick={() => setActiveTab("brain-dumps")}
+                />
+                <NavItem
+                  label="Daily Log"
+                  isActive={activeTab === "logs"}
+                  onClick={() => setActiveTab("logs")}
+                />
+                <NavItem
+                  label="Resources"
+                  isActive={activeTab === "resources"}
+                  onClick={() => setActiveTab("resources")}
+                />
               </div>
             </div>
           </div>
